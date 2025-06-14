@@ -1,0 +1,281 @@
+/* HomePage.css */
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #22E06B;
+}
+
+.logoIcon {
+  font-size: 28px;
+  color: #22E06B;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 40px;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  min-height: 500px;
+}
+
+.heroText {
+  flex: 1;
+  max-width: 600px;
+}
+
+.heroTitle {
+  font-size: 48px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.heroDesc {
+  font-size: 20px;
+  color: #B9CBB9;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.heroBtns {
+  display: flex;
+  gap: 20px;
+}
+
+.gpuImage {
+  width: 280px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+/* Features Section */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  padding: 80px 40px;
+  background: #0f0f0f;
+}
+
+.featureCard {
+  padding: 32px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-radius: 16px;
+  border: 1px solid #333;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(34, 224, 107, 0.1);
+}
+
+.featureTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #22E06B;
+  margin-bottom: 16px;
+}
+
+/* Section Titles */
+.sectionTitle {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: #22E06B;
+  margin: 80px 0 24px;
+}
+
+.howItWorksTitle {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.howItWorksDesc {
+  text-align: center;
+  font-size: 18px;
+  color: #B9CBB9;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  line-height: 1.6;
+}
+
+/* Join Us Section */
+.joinUs {
+  text-align: center;
+  padding: 80px 40px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+}
+
+.joinUsTitle {
+  font-size: 36px;
+  font-weight: 700;
+  color: #22E06B;
+  margin-bottom: 24px;
+}
+
+.joinUsDesc {
+  font-size: 18px;
+  color: #B9CBB9;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.joinBtn {
+  background: linear-gradient(135deg, #22E06B 0%, #1CB859 100%);
+  color: #0f0f0f;
+  border: none;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.joinBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(34, 224, 107, 0.3);
+}
+
+/* FAQ Section */
+.faq {
+  padding: 80px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  margin-bottom: 16px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faqQuestion {
+  width: 100%;
+  padding: 20px;
+  background: #1a1a1a;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.faqQuestion:hover {
+  background: #2d2d2d;
+}
+
+.faqAnswer {
+  padding: 20px;
+  background: #0f0f0f;
+  color: #B9CBB9;
+  line-height: 1.6;
+}
+
+/* Get Started Section */
+.getStarted {
+  text-align: center;
+  padding: 80px 40px;
+  background: linear-gradient(135deg, #22E06B 0%, #1CB859 100%);
+  color: #0f0f0f;
+}
+
+.getStartedTitle {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.getStartedDesc {
+  font-size: 18px;
+  margin-bottom: 32px;
+  opacity: 0.9;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  background: #0f0f0f;
+  border-top: 1px solid #333;
+  color: #B9CBB9;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .heroTitle {
+    font-size: 36px;
+  }
+
+  .heroDesc {
+    font-size: 18px;
+  }
+
+  .heroBtns {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    padding: 60px 20px;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+}
