@@ -225,6 +225,42 @@
   opacity: 0.9;
 }
 
+/* Blockchain Test Section */
+.blockchain-test-section {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin: 2rem 0;
+  border-radius: 12px;
+}
+
+.blockchain-test-section .sectionTitle {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.blockchain-desc {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.blockchain-test-section .btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.blockchain-test-section .btn:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
 /* Footer */
 .footer {
   display: flex;

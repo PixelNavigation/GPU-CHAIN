@@ -155,7 +155,7 @@ function Footer() {
   );
 }
 
-function HomePage({ onAuth }) {
+function HomePage({ onAuth, onGoToBlockchain }) {
   return (
     <>
       <Header onAuth={onAuth} />
@@ -170,6 +170,16 @@ function HomePage({ onAuth }) {
         <JoinUs />
         <FAQ />
         <GetStarted />
+        {/* Blockchain Test Section */}
+        <div className="blockchain-test-section">
+          <div className="sectionTitle">🔗 Blockchain Integration</div>
+          <div className="blockchain-desc">
+            Test our smart contract integration for decentralized GPU compute rewards.
+          </div>
+          <button className="btn" onClick={onGoToBlockchain}>
+            Test Blockchain Features
+          </button>
+        </div>
       </main>
       <Footer />
     </>

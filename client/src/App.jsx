@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HomePage from './components/HomePage';
 import AuthPage from './components/AuthPage';
 import PeerToPeerInterface from './components/PeerToPeerInterface';
+import BlockchainTest from './components/BlockchainTest';
 import "./style.css";
 
 function App() {
@@ -31,26 +32,42 @@ function App() {
     setPage("home");
   };
 
-  return (
-    <div className="body">
-      {page === "home" && (
-        <HomePage onAuth={handleAuth} />
-      )}
-      {page === "auth" && (
-        <AuthPage
-          onBack={handleBackToHome}
-          defaultTab={authTab}
-          onLoginSuccess={handleLoginSuccess}
-        />
-      )}
-      {page === "p2p" && (
-        <PeerToPeerInterface
-          userEmail={userEmail}
-          onLogout={handleLogout}
-        />
-      )}
-    </div>
-  );
+  const handleGoToBlockchain = () => {
+    setPage("blockchain");
+  };
+
+  const renderPage = () => {
+    switch (page) {
+      case "auth":
+        return (
+          <AuthPage
+            activeTab={authTab}
+            onTabChange={setAuthTab}
+            onLoginSuccess={handleLoginSuccess}
+            onBackToHome={handleBackToHome}
+          />
+        );
+      case "p2p":
+        return (
+          <PeerToPeerInterface
+            userEmail={userEmail}
+            onLogout={handleLogout}
+            onGoToBlockchain={handleGoToBlockchain}
+          />
+        );
+      case "blockchain":
+        return <BlockchainTest />;
+      default:
+        return (
+          <HomePage
+            onAuth={handleAuth}
+            onGoToBlockchain={handleGoToBlockchain}
+          />
+        );
+    }
+  };
+
+  return <div className="App">{renderPage()}</div>;
 }
 
 export default App;
