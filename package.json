@@ -12,7 +12,18 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "keywords": ["gpu", "peer-to-peer", "blockchain", "computing"],
+  "keywords": [
+    "gpu",
+    "peer-to-peer",
+    "blockchain",
+    "computing"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@chakra-ui/react": "^3.21.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "framer-motion": "^12.18.1"
+  }
 }
