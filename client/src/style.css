@@ -1,0 +1,458 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #f7df1eaa);
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+body {
+  background: #18251C;
+  color: #fff;
+  font-family: Inter, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  border-bottom: 1px solid #26332A;
+  background: #18251C;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.main {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.hero {
+  background: linear-gradient(120deg, #252A2F 60%, #1D2D1D 100%);
+  border-radius: 16px;
+  padding: 48px 0;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  width: 100%;
+  min-height: 320px;
+  box-sizing: border-box;
+}
+
+.heroText {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+  padding-left: 48px;
+}
+
+.heroTitle {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.heroDesc {
+  font-size: 18px;
+  margin-bottom: 28px;
+}
+
+.heroBtns {
+  display: flex;
+  gap: 16px;
+}
+
+.gpuImage {
+  width: 280px;
+  height: 180px;
+  display: block;
+  margin-right: 48px;
+  background: none;
+}
+
+.btn {
+  background: #22E06B;
+  color: #18251C;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 32px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnSecondary {
+  background: #1F3927;
+  color: #fff;
+  border: 1px solid #22E06B;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 40px 0 16px 48px;
+}
+
+.features {
+  display: flex;
+  gap: 28px;
+  margin: 32px 48px;
+}
+
+.featureCard {
+  background: #22322A;
+  border-radius: 12px;
+  padding: 24px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.faq {
+  margin: 40px 48px;
+}
+
+.faqItem {
+  background: #22322A;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 0 16px;
+}
+
+.faqQuestion {
+  font-weight: 600;
+  padding: 18px 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #fff;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+}
+
+.faqAnswer {
+  padding: 0 0 18px 0;
+  color: #B9CBB9;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #26332A;
+  padding: 24px 32px;
+  color: #B9CBB9;
+  font-size: 14px;
+  background: #18251C;
+  margin-top: 48px;
+}
+
+.center {
+  text-align: center;
+}
+
+.joinUs {
+  background: #1F3927;
+  border-radius: 16px;
+  padding: 36px 24px;
+  margin: 40px 48px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 2px 16px rgba(34,224,107,0.05);
+}
+
+.joinBtn {
+  background: #22E06B;
+  color: #18251C;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 32px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background 0.2s;
+}
+
+.loginContainer {
+  max-width: 420px;
+  margin: 80px auto;
+  background: #22322A;
+  border-radius: 16px;
+  padding: 36px;
+  text-align: center;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #26332A;
+  background: #18251C;
+  color: #fff;
+  font-size: 16px;
+}
+
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 700;
+  background: #22322A;
+  color: #B9CBB9;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  font-size: 18px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tabActive {
+  background: #22E06B;
+  color: #18251C;
+}
+
+/* P2P Interface Styles */
+.p2pContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.p2pHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.p2pHeader h2 {
+  margin: 0;
+  color: #22E06B;
+  font-size: 24px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.userInfo span {
+  color: #B9CBB9;
+  font-weight: 500;
+}
+
+.p2pContent {
+  display: grid;
+  gap: 20px;
+}
+
+.peerInfo {
+  padding: 15px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.peerInfo b {
+  color: #22E06B;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.connectionSection,
+.messageSection,
+.jobSection {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.statusSection {
+  padding: 15px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.messagesSection {
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.messagesList {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 10px;
+  background: #0f0f0f;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+.message {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: #222;
+  border-radius: 6px;
+  border-left: 3px solid #22E06B;
+  font-family: monospace;
+  font-size: 13px;
+  color: #E0E0E0;
+}
+
+.message:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive design for P2P interface */
+@media (max-width: 768px) {
+  .p2pHeader {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .connectionSection,
+  .messageSection {
+    flex-direction: column;
+  }
+  
+  .p2pContainer {
+    padding: 10px;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

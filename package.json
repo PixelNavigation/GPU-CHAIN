@@ -1,0 +1,18 @@
+{
+  "name": "gpu-chain",
+  "version": "1.0.0",
+  "description": "GPU Chain - Peer-to-Peer GPU Sharing Platform",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd client && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../client && npm install",
+    "dev": "npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["gpu", "peer-to-peer", "blockchain", "computing"],
+  "author": "",
+  "license": "ISC"
+}

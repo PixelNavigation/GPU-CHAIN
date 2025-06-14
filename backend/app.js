@@ -3,17 +3,54 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
+const { spawn } = require('child_process');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Start GPU Worker Server automatically
+const startGpuWorker = () => {
+  const gpuWorkerPath = path.join(__dirname, '..', 'gpu-worker');
+  const gpuWorker = spawn('node', ['server.js'], {
+    cwd: gpuWorkerPath,
+    stdio: ['inherit', 'pipe', 'pipe']
+  });
+
+  gpuWorker.stdout.on('data', (data) => {
+    console.log(`[GPU Worker] ${data.toString().trim()}`);
+  });
+
+  gpuWorker.stderr.on('data', (data) => {
+    console.error(`[GPU Worker Error] ${data.toString().trim()}`);
+  });
+
+  gpuWorker.on('close', (code) => {
+    console.log(`[GPU Worker] Process exited with code ${code}`);
+    if (code !== 0) {
+      console.log('[GPU Worker] Restarting GPU worker in 5 seconds...');
+      setTimeout(startGpuWorker, 5000);
+    }
+  });
+
+  gpuWorker.on('error', (err) => {
+    console.error('[GPU Worker] Failed to start:', err);
+  });
+
+  return gpuWorker;
+};
+
+// Start GPU Worker
+console.log('Starting GPU Worker...');
+const gpuWorkerProcess = startGpuWorker();
+
 // PostgreSQL connection
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'logindet',
-  password: '040711',
+  database: 'GPU-CHAIN',
+  password: 'Gautam@1',
   port: 5432,
 });
 
@@ -70,6 +107,37 @@ app.post('/login', async (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`Backend server running on port ${PORT}`);
+  console.log('GPU Worker should be running on port 5001');
+});
+
+// Graceful shutdown handling
+process.on('SIGINT', () => {
+  console.log('\nShutting down servers...');
+  
+  // Close GPU Worker
+  if (gpuWorkerProcess) {
+    console.log('Stopping GPU Worker...');
+    gpuWorkerProcess.kill('SIGTERM');
+  }
+  
+  // Close backend server
+  server.close(() => {
+    console.log('Backend server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  
+  if (gpuWorkerProcess) {
+    gpuWorkerProcess.kill('SIGTERM');
+  }
+  
+  server.close(() => {
+    console.log('Backend server closed');
+    process.exit(0);
+  });
 });
