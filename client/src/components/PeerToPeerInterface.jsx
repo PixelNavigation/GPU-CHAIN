@@ -1,33 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Text,
-  Button,
-  Input,
-  VStack,
-  SimpleGrid,
-  useColorModeValue,
-  Badge,
-  Card,
-  CardBody,
-  CardHeader,
-  Divider,
-  useToast,
-  Icon,
-  Tooltip,
-} from '@chakra-ui/react';
-import { 
-  FaCircle,
-  FaSignOutAlt, 
-  FaUser, 
-  FaServer,
-  FaExchangeAlt
-} from 'react-icons/fa';
-import PeerManager from '../PeerManager'
-import './PeerToPeerInterface.css'
+import React, { useState, useEffect, useRef } from 'react';
+import { FaCircle, FaSignOutAlt, FaUser, FaServer, FaExchangeAlt } from 'react-icons/fa';
+import PeerManager from '../PeerManager';
+import './PeerToPeerInterface.css';
 
 // Peer-to-Peer Interface Component
 function PeerToPeerInterface({ userEmail, onLogout }) {
@@ -37,15 +11,10 @@ function PeerToPeerInterface({ userEmail, onLogout }) {
   const [input, setInput] = useState('')
   const [isConnected, setIsConnected] = useState(false)
   const [peerManager, setPeerManager] = useState(null)
-  const toast = useToast()
-
-  // Theme colors
-  const bgColor = useColorModeValue('gray.50', 'gray.900')
-  const cardBg = useColorModeValue('white', 'gray.800')
-  const textColor = useColorModeValue('gray.800', 'white')
-  const mutedColor = useColorModeValue('gray.600', 'gray.400')
-  const borderColor = useColorModeValue('gray.200', 'gray.700')
-  const messagesBg = useColorModeValue('gray.50', 'gray.700')
+  const [notif, setNotif] = useState("");
+  const [notifType, setNotifType] = useState("info");
+  const [tab, setTab] = useState(0);
+  const cardRef = useRef(null);
 
   useEffect(() => {
     const pm = new PeerManager((data) => {
@@ -69,6 +38,24 @@ function PeerToPeerInterface({ userEmail, onLogout }) {
     })
     return () => pm.peer.destroy()
   }, [])
+
+  // Card tilt effect
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * 8;
+    const rotateY = ((x - centerX) / centerX) * -8;
+    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+  };
+  const handleMouseLeave = () => {
+    const card = cardRef.current;
+    if (card) card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+  };
 
   const connectToPeer = () => {
     if (!connId || !peerManager) return
@@ -98,213 +85,123 @@ function PeerToPeerInterface({ userEmail, onLogout }) {
   const sendJob = () => {
     if (peerManager) {
       const job = {
-        type: 'compute',
         payload: {
-          numbers: [1, 2, 3, 4, 5],
-          operation: 'sum',
+          numbers: [1,2,3,4,5,6,7,8,9,10], // Example numbers array
+          operation: 'sum' // Example operation
         },
-        from: peerId,
-        timestamp: Date.now(),
-      }
-      peerManager.sendJob(job)
-      setMessages((msgs) => [...msgs, `You sent job: ${JSON.stringify(job)}`])
+        numPeers: 3,
+        jobId: Math.random().toString(36).substr(2, 9)
+      };
+      peerManager.conn && peerManager.conn.send({ job });
+      setMessages((msgs) => [...msgs, `You sent a job: Sample GPU job`]);
     }
   }
 
-  const handleConnect = () => {
-    toast({
-      title: 'Connecting to peer...',
-      status: 'info',
-      duration: 2000,
-      isClosable: true,
-    });
-    connectToPeer()
-  };
+  useEffect(() => {
+    const glow = document.createElement('div');
+    glow.className = 'glow-cursor';
+    document.body.appendChild(glow);
+    const move = e => {
+      glow.style.left = `${e.clientX - 30}px`;
+      glow.style.top = `${e.clientY - 30}px`;
+    };
+    window.addEventListener('mousemove', move);
+    return () => {
+      window.removeEventListener('mousemove', move);
+      document.body.removeChild(glow);
+    };
+  }, []);
 
   return (
-    <Box bg={bgColor} minH="100vh" py={8}>
-      <Container maxW="container.xl">
-        <Card mb={8} borderWidth="1px" borderColor={borderColor}>
-          <CardBody>
-            <Flex justify="space-between" align="center" wrap={{ base: "wrap", md: "nowrap" }} gap={4}>
-              <Flex align="center" gap={4}>
-                <Heading
-                  size="lg"
-                  bgGradient="linear(to-r, green.400, green.600)"
-                  bgClip="text"
-                >
-                  GPU Share Network
-                </Heading>
-                <Badge 
-                  colorScheme={isConnected ? "green" : "gray"}
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  px={3}
-                  py={1}
-                  borderRadius="full"
-                >
-                  <Icon as={FaCircle} w={2} h={2} />
-                  {isConnected ? 'Connected' : 'Disconnected'}
-                </Badge>
-              </Flex>
-              
-              <Flex align="center" gap={4}>
-                <Tooltip label={userEmail}>
-                  <Flex align="center" color={mutedColor}>
-                    <Icon as={FaUser} mr={2} />
-                    <Text>{userEmail}</Text>
-                  </Flex>
-                </Tooltip>
-                <Button
-                  leftIcon={<FaSignOutAlt />}
-                  variant="outline"
-                  colorScheme="green"
-                  onClick={onLogout}
-                >
-                  Logout
-                </Button>
-              </Flex>
-            </Flex>
-          </CardBody>
-        </Card>
-
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
-          {/* Connection Status */}
-          <Card>
-            <CardHeader>
-              <Heading size="md" color={textColor}>
-                <Flex align="center" gap={2}>
-                  <Icon as={FaServer} />
-                  Network Status
-                </Flex>
-              </Heading>
-            </CardHeader>
-            <CardBody>
-              <VStack align="stretch" spacing={4}>
-                <Text color={mutedColor}>
-                  {isConnected 
-                    ? `Connected to: ${connId}`
-                    : 'Not connected to any peer'}
-                </Text>
-                <Button
-                  colorScheme="green"
-                  isDisabled={isConnected}
-                  onClick={handleConnect}
-                  leftIcon={<FaExchangeAlt />}
-                >
-                  Connect to Peer
-                </Button>
-              </VStack>
-            </CardBody>
-          </Card>
-
-          {/* GPU Resources */}
-          <Card>
-            <CardHeader>
-              <Heading size="md" color={textColor}>
-                GPU Resources
-              </Heading>
-            </CardHeader>
-            <CardBody>
-              <VStack align="stretch" spacing={4}>
-                <Box p={4} bg={messagesBg} borderRadius="md">
-                  <Text color={mutedColor}>Available GPUs: 2</Text>
-                  <Text color={mutedColor}>Total Memory: 16GB</Text>
-                  <Text color={mutedColor}>Utilization: 45%</Text>
-                </Box>
-              </VStack>
-            </CardBody>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <Heading size="md" color={textColor}>
-                Quick Actions
-              </Heading>
-            </CardHeader>
-            <CardBody>
-              <VStack spacing={4}>
-                <Button colorScheme="green" w="full">
-                  Share GPU
-                </Button>
-                <Button colorScheme="green" variant="outline" w="full">
-                  Request GPU
-                </Button>
-              </VStack>
-            </CardBody>
-          </Card>
-        </SimpleGrid>
-
-        {/* Messages Section */}
-        <Card mt={8}>
-          <CardHeader>
-            <Heading size="md" color={textColor}>
-              Network Messages
-            </Heading>
-          </CardHeader>
-          <CardBody>
-            <VStack align="stretch" spacing={4}>
-              <Box
-                maxH="400px"
-                overflowY="auto"
-                bg={messagesBg}
-                p={4}
-                borderRadius="md"
-                sx={{
-                  '&::-webkit-scrollbar': {
-                    width: '4px',
-                  },
-                  '&::-webkit-scrollbar-track': {
-                    width: '6px',
-                  },
-                  '&::-webkit-scrollbar-thumb': {
-                    background: 'gray.500',
-                    borderRadius: '24px',
-                  },
-                }}
+    <div className="p2pContainer fadeIn">
+      <div
+        className="p2pCard animatedCard"
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="p2pHeader">
+          <div className="userInfo">
+            <FaUser color="#22E06B" />
+            <span>{userEmail}</span>
+            <FaCircle color={isConnected ? 'green' : 'gray'} size={12} title={isConnected ? 'Connected' : 'Disconnected'} />
+          </div>
+          <div className="peerIdBox" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className="peerIdLabel">Your Peer ID:</span>
+            <span className="peerIdValue" style={{ userSelect: 'all', background: '#232d23', borderRadius: 4, padding: '2px 8px', fontFamily: 'monospace' }}>{peerId || '...'}</span>
+            {peerId && (
+              <button
+                className="copyBtn"
+                style={{ marginLeft: 4, background: 'none', border: 'none', color: '#22E06B', cursor: 'pointer', fontSize: 16, padding: 2 }}
+                title="Copy Peer ID"
+                onClick={() => { navigator.clipboard.writeText(peerId); }}
               >
-                {messages.length > 0 ? (
-                  messages.map((msg, index) => (
-                    <Box
-                      key={index}
-                      p={3}
-                      mb={2}
-                      bg={cardBg}
-                      borderRadius="md"
-                      borderLeft="4px"
-                      borderLeftColor={msg.startsWith('You:') ? 'green.400' : 'orange.400'}
-                    >
-                      <Text color={textColor}>{msg}</Text>
-                    </Box>
-                  ))
-                ) : (
-                  <Text color={mutedColor} textAlign="center" py={8}>
-                    No messages yet
-                  </Text>
-                )}
-              </Box>
-              <Divider />
-              <Flex gap={4}>
-                <Input
+                📋
+              </button>
+            )}
+          </div>
+          <button className="logoutBtn ripple" onClick={onLogout}>
+            <FaSignOutAlt style={{ marginRight: 6 }} /> Logout
+          </button>
+        </div>
+        <div className="tabContainer">
+          <button className={`tab ${tab === 0 ? "tabActive" : ""}`} onClick={() => setTab(0)} type="button">Peer Chat</button>
+          <button className={`tab ${tab === 1 ? "tabActive" : ""}`} onClick={() => setTab(1)} type="button">Send Job</button>
+        </div>
+        <div className="tabPanels">
+          {tab === 0 && (
+            <div className="tabPanel slideInLeft">
+              <div style={{ marginBottom: 16 }}>
+                <input
+                  className="input"
+                  placeholder="Peer ID to connect"
+                  value={connId}
+                  onChange={e => setConnId(e.target.value)}
+                  style={{ marginRight: 8, width: 200 }}
+                />
+                <button className="authBtn ripple" onClick={connectToPeer}>Connect</button>
+              </div>
+              <div className="chatBox">
+                {messages.map((msg, idx) => (
+                  <div key={idx} className="chatMsg">{msg}</div>
+                ))}
+              </div>
+              <div className="p2pMessageRow" style={{ display: 'flex', gap: 0, alignItems: 'stretch', marginTop: 8 }}>
+                <input
+                  className="input"
                   placeholder="Type a message..."
-                  bg={messagesBg}
-                  border="1px"
-                  borderColor={borderColor}
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  onKeyPress={e => e.key === 'Enter' && sendMessage()}
+                  onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                  style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0, flex: 1, minWidth: 0 }}
                 />
-                <Button colorScheme="green" onClick={sendMessage} disabled={!isConnected}>
+                <button
+                  className="authBtn ripple"
+                  onClick={sendMessage}
+                  disabled={!isConnected || !input.trim()}
+                  style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, marginLeft: -1, minWidth: 90, fontSize: 16, fontWeight: 700, boxShadow: 'none' }}
+                >
                   Send
-                </Button>
-              </Flex>
-            </VStack>
-          </CardBody>
-        </Card>
-      </Container>
-    </Box>
+                </button>
+              </div>
+            </div>
+          )}
+          {tab === 1 && (
+            <div className="tabPanel slideInRight">
+              <button className="authBtn ripple" onClick={sendJob}>
+                <FaServer style={{ marginRight: 6 }} /> Send GPU Job
+              </button>
+            </div>
+          )}
+        </div>
+        {notif && (
+          <div className={`message ${notifType === 'success' ? 'messageSuccess bounceIn' : notifType === 'error' ? 'messageError shake' : ''}`}
+            style={{ marginTop: 18 }}>
+            {notif}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 

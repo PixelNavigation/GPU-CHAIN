@@ -49,8 +49,8 @@ const gpuWorkerProcess = startGpuWorker();
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'logindet',
-  password: '040711',
+  database: 'gyhvb',
+  password: '2416',
   port: 5432,
 });
 
