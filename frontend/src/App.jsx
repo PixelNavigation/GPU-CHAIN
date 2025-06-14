@@ -1,192 +1,15 @@
 import React, { useState } from "react";
-
-// Simple CSS-in-JS for demonstration
-const styles = {
-  body: {
-    background: "#18251C",
-    color: "#fff",
-    fontFamily: "Inter, sans-serif",
-    minHeight: "100vh",
-    margin: 0,
-    padding: 0,
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "18px 32px",
-    borderBottom: "1px solid #26332A",
-    background: "#18251C",
-  },
-  logo: { fontWeight: 700, fontSize: 20, display: "flex", alignItems: "center" },
-  nav: { display: "flex", alignItems: "center", gap: 20 },
-  main: { 
-    width: "100vw",
-    maxWidth: "100vw",
-    margin: 0,
-    padding: 0,
-    boxSizing: "border-box"
-  },
-  hero: {
-    background: "linear-gradient(120deg, #252A2F 60%, #1D2D1D 100%)",
-    borderRadius: 16,
-    padding: "48px 0",
-    textAlign: "center",
-    marginBottom: 40,
-    position: "relative",
-    overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 48,
-    width: "100%",
-    minHeight: 320,
-    boxSizing: "border-box"
-  },
-  heroText: {
-    flex: 1,
-    minWidth: 300,
-    textAlign: "left",
-    paddingLeft: 48,
-  },
-  heroTitle: { fontSize: 36, fontWeight: 800, marginBottom: 12 },
-  heroDesc: { fontSize: 18, marginBottom: 28 },
-  heroBtns: { display: "flex", gap: 16 },
-  gpuImage: {
-    width: 280,
-    height: 180,
-    display: "block",
-    marginRight: 48,
-    background: "none"
-  },
-  btn: {
-    background: "#22E06B",
-    color: "#18251C",
-    border: "none",
-    borderRadius: 24,
-    padding: "12px 32px",
-    fontWeight: 700,
-    fontSize: 16,
-    cursor: "pointer",
-    transition: "background 0.2s",
-  },
-  btnSecondary: {
-    background: "#1F3927",
-    color: "#fff",
-    border: "1px solid #22E06B",
-  },
-  sectionTitle: { fontSize: 24, fontWeight: 700, margin: "40px 0 16px 48px" },
-  features: { display: "flex", gap: 28, margin: "32px 48px" },
-  featureCard: {
-    background: "#22322A",
-    borderRadius: 12,
-    padding: 24,
-    flex: 1,
-    minWidth: 180,
-  },
-  faq: { margin: "40px 48px" },
-  faqItem: {
-    background: "#22322A",
-    borderRadius: 8,
-    marginBottom: 12,
-    padding: "0 16px",
-  },
-  faqQuestion: {
-    fontWeight: 600,
-    padding: "18px 0",
-    cursor: "pointer",
-    border: "none",
-    background: "none",
-    color: "#fff",
-    width: "100%",
-    textAlign: "left",
-    fontSize: 16,
-  },
-  faqAnswer: { padding: "0 0 18px 0", color: "#B9CBB9" },
-  footer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTop: "1px solid #26332A",
-    padding: "24px 32px",
-    color: "#B9CBB9",
-    fontSize: 14,
-    background: "#18251C",
-    marginTop: 48
-  },
-  center: { textAlign: "center" },
-  joinUs: {
-    background: "#1F3927",
-    borderRadius: 16,
-    padding: "36px 24px",
-    margin: "40px 48px",
-    textAlign: "center",
-    color: "#fff",
-    boxShadow: "0 2px 16px rgba(34,224,107,0.05)",
-  },
-  joinBtn: {
-    background: "#22E06B",
-    color: "#18251C",
-    border: "none",
-    borderRadius: 24,
-    padding: "12px 32px",
-    fontWeight: 700,
-    fontSize: 16,
-    cursor: "pointer",
-    marginTop: 18,
-    transition: "background 0.2s",
-  },
-  loginContainer: {
-    maxWidth: 420,
-    margin: "80px auto",
-    background: "#22322A",
-    borderRadius: 16,
-    padding: 36,
-    textAlign: "center",
-  },
-  input: {
-    width: "100%",
-    padding: "14px 12px",
-    margin: "12px 0",
-    borderRadius: 8,
-    border: "1px solid #26332A",
-    background: "#18251C",
-    color: "#fff",
-    fontSize: 16,
-  },
-  tabContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 24,
-    gap: 8,
-  },
-  tab: {
-    flex: 1,
-    padding: "12px 0",
-    cursor: "pointer",
-    fontWeight: 700,
-    background: "#22322A",
-    color: "#B9CBB9",
-    border: "none",
-    borderRadius: "8px 8px 0 0",
-    fontSize: 18,
-    transition: "background 0.2s, color 0.2s",
-  },
-  tabActive: {
-    background: "#22E06B",
-    color: "#18251C",
-  },
-};
+import "./style.css";
 
 function Header({ onAuth }) {
   return (
-    <header style={styles.header}>
-      <div style={styles.logo}>
-        <span style={{ marginRight: 8, fontSize: 22 }}>▲</span> GPU Share
+    <header className="header">
+      <div className="logo">
+        <span className="logoIcon">▲</span> GPU Share
       </div>
-      <nav style={styles.nav}>
-        <button style={styles.btn} onClick={() => onAuth("login")}>Log in</button>
-        <button style={{ ...styles.btn, ...styles.btnSecondary }} onClick={() => onAuth("signup")}>Sign up</button>
+      <nav className="nav">
+        <button className="btn" onClick={() => onAuth("login")}>Log in</button>
+        <button className="btn btnSecondary" onClick={() => onAuth("signup")}>Sign up</button>
       </nav>
     </header>
   );
@@ -194,15 +17,15 @@ function Header({ onAuth }) {
 
 function Hero() {
   return (
-    <div style={styles.hero}>
-      <div style={styles.heroText}>
-        <div style={styles.heroTitle}>Unlock the Power of Shared GPUs</div>
-        <div style={styles.heroDesc}>
+    <div className="hero">
+      <div className="heroText">
+        <div className="heroTitle">Unlock the Power of Shared GPUs</div>
+        <div className="heroDesc">
           Access high-performance GPUs at a fraction of the cost. Join our community of renters and providers.
         </div>
-        <div style={styles.heroBtns}>
-          <button style={styles.btn}>Rent a GPU</button>
-          <button style={{ ...styles.btn, ...styles.btnSecondary }}>Rent Out a GPU</button>
+        <div className="heroBtns">
+          <button className="btn">Rent a GPU</button>
+          <button className="btn btnSecondary">Rent Out a GPU</button>
         </div>
       </div>
       <GpuSVG />
@@ -214,7 +37,7 @@ function Hero() {
 function GpuSVG() {
   return (
     <svg
-      style={styles.gpuImage}
+      className="gpuImage"
       viewBox="0 0 280 180"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -233,17 +56,17 @@ function GpuSVG() {
 
 function Features() {
   return (
-    <div style={styles.features}>
-      <div style={styles.featureCard}>
-        <div style={{ fontWeight: 700, marginBottom: 8 }}>Rent GPUs</div>
+    <div className="features">
+      <div className="featureCard">
+        <div className="featureTitle">Rent GPUs</div>
         <div>Browse a wide selection of GPUs and find the perfect match for your needs.</div>
       </div>
-      <div style={styles.featureCard}>
-        <div style={{ fontWeight: 700, marginBottom: 8 }}>Flexible Access</div>
+      <div className="featureCard">
+        <div className="featureTitle">Flexible Access</div>
         <div>Access GPUs on demand, with flexible rental durations to suit your project timeline.</div>
       </div>
-      <div style={styles.featureCard}>
-        <div style={{ fontWeight: 700, marginBottom: 8 }}>Cost-Effective</div>
+      <div className="featureCard">
+        <div className="featureTitle">Cost-Effective</div>
         <div>Pay only for the resources you use, eliminating the need for expensive hardware purchases.</div>
       </div>
     </div>
@@ -252,14 +75,14 @@ function Features() {
 
 function JoinUs() {
   return (
-    <div style={styles.joinUs}>
-      <h2 style={{ fontSize: 26, fontWeight: 800, marginBottom: 12 }}>Join Our Community</h2>
-      <p style={{ fontSize: 17, marginBottom: 16 }}>
+    <div className="joinUs">
+      <h2 className="joinUsTitle">Join Our Community</h2>
+      <p className="joinUsDesc">
         Want to be part of a vibrant GPU sharing community?  
         <br />
         Connect, collaborate, and grow with like-minded tech enthusiasts!
       </p>
-      <button style={styles.joinBtn} onClick={() => alert("Thank you for your interest! Community joining coming soon.")}>
+      <button className="joinBtn" onClick={() => alert("Thank you for your interest! Community joining coming soon.")}>
         Join Us
       </button>
     </div>
@@ -283,18 +106,18 @@ function FAQ() {
     },
   ];
   return (
-    <div style={styles.faq}>
-      <div style={styles.sectionTitle}>Frequently Asked Questions</div>
+    <div className="faq">
+      <div className="sectionTitle">Frequently Asked Questions</div>
       {faqs.map((item, i) => (
-        <div style={styles.faqItem} key={i}>
+        <div className="faqItem" key={i}>
           <button
-            style={styles.faqQuestion}
+            className="faqQuestion"
             onClick={() => setOpen(open === i ? null : i)}
             aria-expanded={open === i}
           >
             {item.q}
           </button>
-          {open === i && <div style={styles.faqAnswer}>{item.a}</div>}
+          {open === i && <div className="faqAnswer">{item.a}</div>}
         </div>
       ))}
     </div>
@@ -303,19 +126,19 @@ function FAQ() {
 
 function GetStarted() {
   return (
-    <div style={{ ...styles.center, margin: "60px 0" }}>
-      <div style={{ fontSize: 28, fontWeight: 800, marginBottom: 16 }}>Ready to Get Started?</div>
-      <div style={{ marginBottom: 28 }}>
+    <div className="getStarted">
+      <div className="getStartedTitle">Ready to Get Started?</div>
+      <div className="getStartedDesc">
         Join our community and unlock the power of shared GPUs.
       </div>
-      <button style={styles.btn}>Get Started</button>
+      <button className="btn">Get Started</button>
     </div>
   );
 }
 
 function Footer() {
   return (
-    <footer style={styles.footer}>
+    <footer className="footer">
       <div>
         Terms of Service
       </div>
@@ -335,24 +158,69 @@ function Footer() {
 // Unified Auth Page with Login & Signup Tabs
 function AuthPage({ onBack, defaultTab = "login" }) {
   const [tab, setTab] = useState(defaultTab);
+  const[name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Handles login POST
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(data.message || "Login successful!");
+      } else {
+        setMessage(data.message || "Login failed.");
+      }
+    } catch (err) {
+      setMessage("Network error: " + err.message);
+    }
+  };
+
+  // Handles signup POST
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    try {
+      const res = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(data.message || "Signup successful!");
+      } else {
+        setMessage(data.message || "Signup failed.");
+      }
+    } catch (err) {
+      setMessage("Network error: " + err.message);
+    }
+  };
 
   return (
-    <div style={styles.loginContainer}>
-      <div style={styles.tabContainer}>
+    <div className="loginContainer">
+      <div className="tabContainer">
         <button
-          style={{
-            ...styles.tab,
-            ...(tab === "login" ? styles.tabActive : {}),
-          }}
+          className={
+            "tab" + (tab === "login" ? " tabActive" : "")
+          }
           onClick={() => setTab("login")}
         >
           Log In
         </button>
         <button
-          style={{
-            ...styles.tab,
-            ...(tab === "signup" ? styles.tabActive : {}),
-          }}
+          className={
+            "tab" + (tab === "signup" ? " tabActive" : "")
+          }
           onClick={() => setTab("signup")}
         >
           Sign Up
@@ -360,43 +228,78 @@ function AuthPage({ onBack, defaultTab = "login" }) {
       </div>
       {tab === "login" ? (
         <>
-          <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 20 }}>Log in to your account</div>
-          <form>
-            <input style={styles.input} type="email" placeholder="Email" />
-            <input style={styles.input} type="password" placeholder="Password" />
-            <button style={{ ...styles.btn, width: "100%", margin: "18px 0" }} type="submit">Log in</button>
+          <div className="authTitle">Log in to your account</div>
+          <form onSubmit={handleLogin}>
+            <input
+              className="input"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            <input
+              className="input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+            <button className="btn authBtn" type="submit">Log in</button>
           </form>
-          <div style={{ color: "#B9CBB9", marginTop: 10 }}>
+          <div className="authSwitch">
             Don't have an account?{" "}
-            <span style={{ color: "#22E06B", cursor: "pointer" }} onClick={() => setTab("signup")}>
+            <span className="switchTab" onClick={() => setTab("signup")}>
               Sign up
             </span>
           </div>
         </>
       ) : (
         <>
-          <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 20 }}>Create a new account</div>
-          <form>
-            <input style={styles.input} type="text" placeholder="Full Name" />
-            <input style={styles.input} type="email" placeholder="Email" />
-            <input style={styles.input} type="password" placeholder="Password" />
-            <button style={{ ...styles.btn, width: "100%", margin: "18px 0" }} type="submit">Sign up</button>
+          <div className="authTitle">Create a new account</div>
+          <form onSubmit={handleSignup}>
+            <input
+              className="input"
+              type="name"
+              placeholder="Name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+            <input
+              className="input"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            <input
+              className="input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+            <button className="btn authBtn" type="submit">Sign up</button>
           </form>
-          <div style={{ color: "#B9CBB9", marginTop: 10 }}>
+          <div className="authSwitch">
             Already have an account?{" "}
-            <span style={{ color: "#22E06B", cursor: "pointer" }} onClick={() => setTab("login")}>
+            <span className="switchTab" onClick={() => setTab("login")}>
               Log in
             </span>
           </div>
         </>
       )}
+      {message && (
+        <div className="message" style={{ color: message.includes("success") ? "#22E06B" : "#ff5252" }}>
+          {message}
+        </div>
+      )}
       <button
-        style={{
-          ...styles.btnSecondary,
-          width: "100%",
-          marginTop: 24,
-          padding: "10px 0",
-        }}
+        className="btnSecondary backBtn"
         onClick={onBack}
       >
         Back to Home
@@ -404,6 +307,7 @@ function AuthPage({ onBack, defaultTab = "login" }) {
     </div>
   );
 }
+
 
 function App() {
   const [page, setPage] = useState("home");
@@ -416,16 +320,16 @@ function App() {
   };
 
   return (
-    <div style={styles.body}>
+    <div className="body">
       {page !== "auth" && (
         <Header onAuth={handleAuth} />
       )}
       {page === "home" && (
-        <main style={styles.main}>
+        <main className="main">
           <Hero />
-          <div style={styles.sectionTitle}>How It Works</div>
-          <div style={{ fontSize: 22, fontWeight: 700, margin: "16px 48px" }}>Seamless GPU Sharing</div>
-          <div style={{ color: "#B9CBB9", marginBottom: 18, marginLeft: 48 }}>
+          <div className="sectionTitle">How It Works</div>
+          <div className="howItWorksTitle">Seamless GPU Sharing</div>
+          <div className="howItWorksDesc">
             Our platform connects renters with providers, offering a flexible and cost-effective solution for accessing powerful GPUs.
           </div>
           <Features />
