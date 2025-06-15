@@ -96,29 +96,29 @@ function Features() {
 function FanVisualization() {
   const fanRef = useRef(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
+  useEffect(() => {    const handleScroll = () => {
       if (fanRef.current) {
         const scrollPosition = window.scrollY;
-        const rotation = scrollPosition * 0.2; // Slower rotation speed
+        const rotation = scrollPosition * 0.2; // Keep rotation speed constant
         
-        // Define ring sizes (in rem)
-        const ringSizes = [50, 45, 40, 35, 30]; // From largest to smallest
+        // Get the fan's position relative to viewport
+        const rect = fanRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
         
-        // Calculate which ring size we should match based on scroll position
-        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercentage = scrollPosition / scrollHeight;
+        // Calculate scaling based on element's position in viewport
+        const elementCenter = rect.top + rect.height / 2;
+        const viewportCenter = viewportHeight / 2;
+        const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
+        const maxDistance = viewportHeight / 2;
         
-        // Calculate the current size index based on scroll position
-        const sizeIndex = Math.min(
-          Math.floor(scrollPercentage * ringSizes.length),
-          ringSizes.length - 1
-        );
+        // Calculate scale factor (1 at viewport center, 0 at edges)
+        const scrollProgress = 1 - Math.min(distanceFromCenter / maxDistance, 1);        // Apply size interpolation with new size range (700px to 800px)
+        const minSize = 700;
+        const maxSize = 800;
+        const currentSize = minSize + (maxSize - minSize) * scrollProgress;
         
-        // Calculate scale factor
-        // Base scale is 0.2 (to fit inside rings)
-        const currentRingSize = ringSizes[sizeIndex];
-        const scale = (currentRingSize * 0.2) / 50; // Normalize to largest ring size
+        // Calculate scale based on current size relative to base size (350px)
+        const scale = currentSize / 350;
         
         // Apply transform with smooth interpolation
         fanRef.current.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
@@ -126,10 +126,20 @@ function FanVisualization() {
     };
 
     // Initial size adjustment
-    handleScroll();
+    handleScroll();    // Use requestAnimationFrame for smoother scrolling
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', scrollListener);
+    return () => window.removeEventListener('scroll', scrollListener);
   }, []);
 
   return (    <div className="fan-visualization">
@@ -143,11 +153,6 @@ function FanVisualization() {
         className="fan-image"
         src="https://dlcdnwebimgs.asus.com/gain/703118E8-AABC-4ED7-9915-FD808DBAE266/w717/h525"
         alt="GPU Fan"
-        style={{ 
-          maxWidth: '500px', 
-          height: 'auto',
-          transition: 'transform 0.3s ease-out'
-        }}
       />
     </div>
   );
