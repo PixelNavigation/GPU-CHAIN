@@ -9,6 +9,8 @@ const GameGPUInterface = () => {
   const [connectedPeers, setConnectedPeers] = useState([])
   const [isGameRunning, setIsGameRunning] = useState(false)
   const [isConnectedToNetwork, setIsConnectedToNetwork] = useState(false)
+  const [myPeerId, setMyPeerId] = useState('')
+  const [peerInputValue, setPeerInputValue] = useState('')
   const [renderStats, setRenderStats] = useState({
     fps: 0,
     frameTime: 0,
@@ -30,6 +32,12 @@ const GameGPUInterface = () => {
     const gpm = new GameGPUManager()
     const pm = new PeerManager((data) => {
       handleGameRenderResult(data)
+    })
+    
+    // Set up peer ID callback
+    pm.setPeerIdCallback((id) => {
+      setMyPeerId(id)
+      console.log('My Peer ID:', id)
     })
     
     setGameGPUManager(gpm)
@@ -69,21 +77,31 @@ const GameGPUInterface = () => {
       objects: sampleObjects
     }))
   }
+  const connectGamePeer = () => {
+    if (!peerInputValue.trim()) {
+      alert('Please enter a valid Peer ID')
+      return
+    }
 
-  const connectGamePeer = (peerId) => {
+    if (peerInputValue === myPeerId) {
+      alert('Cannot connect to your own Peer ID')
+      return
+    }
+
     if (peerManager && gameGPUManager) {
-      peerManager.connectToPeer(peerId)
+      peerManager.connectToPeer(peerInputValue)
       
-      if (peerManager.conn) {        peerManager.conn.on('open', () => {
+      if (peerManager.conn) {
+        peerManager.conn.on('open', () => {
           // Add peer to game GPU manager
-          gameGPUManager.addPeer(peerId, peerManager.conn, {
+          gameGPUManager.addPeer(peerInputValue, peerManager.conn, {
             gpuScore: 0.8, // Estimated GPU capability
             vram: '8GB',
             architecture: 'CUDA'
           })
           
           setConnectedPeers(prev => [...prev, {
-            id: peerId,
+            id: peerInputValue,
             status: 'connected',
             gpuLoad: 0,
             latency: 0,
@@ -92,24 +110,34 @@ const GameGPUInterface = () => {
           
           // Update network connection status
           setIsConnectedToNetwork(true)
+          setPeerInputValue('') // Clear input after successful connection
         })
         
         peerManager.conn.on('close', () => {
           // Remove peer and update status
-          setConnectedPeers(prev => prev.filter(peer => peer.id !== peerId))
+          setConnectedPeers(prev => prev.filter(peer => peer.id !== peerInputValue))
           if (connectedPeers.length <= 1) {
             setIsConnectedToNetwork(false)
           }
         })
         
-        peerManager.conn.on('error', () => {
+        peerManager.conn.on('error', (error) => {
+          console.error('Peer connection error:', error)
           // Update peer status to error
           setConnectedPeers(prev => prev.map(peer => 
-            peer.id === peerId ? { ...peer, status: 'error' } : peer
+            peer.id === peerInputValue ? { ...peer, status: 'error' } : peer
           ))
         })
       }
     }
+  }
+
+  const copyPeerIdToClipboard = () => {
+    navigator.clipboard.writeText(myPeerId).then(() => {
+      alert('Peer ID copied to clipboard!')
+    }).catch(err => {
+      console.error('Failed to copy Peer ID:', err)
+    })
   }
 
   const startDistributedGame = async () => {
@@ -254,23 +282,89 @@ const GameGPUInterface = () => {
             }
           </span>
         </div>
-      </div>
+      </div>      <div className="game-controls">
+        {/* Your Peer ID Section */}
+        <div className="my-peer-section">
+          <h3>📋 Your Peer ID</h3>
+          <div className="peer-id-display">
+            {myPeerId ? (
+              <>
+                <div className="peer-id-box">
+                  <span className="peer-id-text">{myPeerId}</span>
+                  <button 
+                    className="copy-btn"
+                    onClick={copyPeerIdToClipboard}
+                    title="Copy Peer ID to clipboard"
+                  >
+                    📋 Copy
+                  </button>
+                </div>
+                <p className="peer-id-instructions">
+                  Share this ID with others so they can connect to your GPU
+                </p>
+              </>
+            ) : (
+              <div className="peer-id-loading">
+                <span>🔄 Generating Peer ID...</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-      <div className="game-controls">
         <div className="connection-section">
-          <h3>GPU Peer Connection</h3>
+          <h3>🔗 Connect to GPU Peers</h3>
+          
+          {/* Step-by-step instructions */}
+          <div className="connection-instructions">
+            <div className="instruction-steps">
+              <div className="step">
+                <span className="step-number">1</span>
+                <span className="step-text">Share your Peer ID above with someone else running this app</span>
+              </div>
+              <div className="step">
+                <span className="step-number">2</span>
+                <span className="step-text">Ask them to share their Peer ID with you</span>
+              </div>
+              <div className="step">
+                <span className="step-number">3</span>
+                <span className="step-text">Enter their Peer ID below and click Connect</span>
+              </div>
+              <div className="step">
+                <span className="step-number">4</span>
+                <span className="step-text">Once connected, you can start distributed gaming!</span>
+              </div>
+            </div>
+          </div>
+
           <div className="peer-input">
-            <input 
-              type="text" 
-              placeholder="Enter Peer ID for GPU sharing"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && e.target.value) {
-                  connectGamePeer(e.target.value)
-                  e.target.value = ''
-                }
-              }}
-            />
-            <button onClick={testSingleFrameRender}>Test Render</button>
+            <div className="input-group">
+              <input 
+                type="text" 
+                placeholder="Enter friend's Peer ID (e.g., abc123-def456-ghi789)"
+                value={peerInputValue}
+                onChange={(e) => setPeerInputValue(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    connectGamePeer()
+                  }
+                }}
+                className="peer-input-field"
+              />
+              <button 
+                onClick={connectGamePeer}
+                disabled={!peerInputValue.trim()}
+                className="connect-btn"
+              >
+                🔗 Connect
+              </button>
+            </div>
+            <button 
+              onClick={testSingleFrameRender}
+              disabled={connectedPeers.length === 0}
+              className="test-render-btn"
+            >
+              🧪 Test Render
+            </button>
           </div>
             <div className="connected-peers">
             <h4>
