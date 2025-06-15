@@ -354,7 +354,7 @@ class HackathonBlockchainService {
       // Use parseEther from ethers v6 or utils from v5 based on availability
       const rewardWei = ethers.parseEther ? 
         ethers.parseEther(rewardEth.toString()) : 
-        ethers.utils.parseEther(rewardEth.toString());
+        ethers.parseEther(rewardEth.toString());
       
       console.log("📋 Creating task:", { taskHash, deadline, rewardEth });
       
@@ -598,14 +598,13 @@ class HackathonBlockchainService {
       try {
         const taskInfo = await this.contract.getTask(taskId);
         const isCreator = taskInfo.requester.toLowerCase() === this.currentAccount?.toLowerCase();
-        const isCompleted = taskInfo.status >= 2; // Completed, Verified, Disputed states        const isWorker = taskInfo.worker !== (ethers.ZeroAddress || ethers.constants.AddressZero) && 
-                        taskInfo.worker.toLowerCase() === this.currentAccount?.toLowerCase();
-          return {
+        const isCompleted = taskInfo.status >= 2; // Completed, Verified, Disputed states        const isWorker = taskInfo.worker !== ethers.ZeroAddress && 
+                        taskInfo.worker.toLowerCase() === this.currentAccount?.toLowerCase();          return {
           taskHash: taskInfo.taskHash,
-          reward: ethers.formatEther ? ethers.formatEther(taskInfo.rewardAmount) : ethers.utils.formatEther(taskInfo.rewardAmount),
+          reward: ethers.formatEther(taskInfo.rewardAmount),
           deadline: Math.floor((Number(taskInfo.deadline) - Date.now() / 1000) / 3600), // hours remaining
           status: this._getTaskStatus(taskInfo.status),          creator: taskInfo.requester,
-          worker: taskInfo.worker !== (ethers.ZeroAddress || ethers.constants.AddressZero) ? taskInfo.worker : null,
+          worker: taskInfo.worker !== ethers.ZeroAddress ? taskInfo.worker : null,
           output: taskInfo.resultHash || null,
           completedAt: taskInfo.completedAt > 0 ? new Date(Number(taskInfo.completedAt) * 1000).toISOString() : null,
           requirements: 'GPU compute task',
@@ -702,8 +701,8 @@ class HackathonBlockchainService {
             const taskInfo = await this.contract.getTask(taskId);            createdTasks.push({
               taskId: taskId.toString(),
               taskHash: taskInfo.taskHash,
-              reward: ethers.formatEther ? ethers.formatEther(taskInfo.rewardAmount) : ethers.utils.formatEther(taskInfo.rewardAmount),              status: this._getTaskStatus(taskInfo.status),
-              worker: taskInfo.worker !== (ethers.ZeroAddress || ethers.constants.AddressZero) ? taskInfo.worker : null,
+              reward: ethers.formatEther(taskInfo.rewardAmount),              status: this._getTaskStatus(taskInfo.status),
+              worker: taskInfo.worker !== ethers.ZeroAddress ? taskInfo.worker : null,
               output: taskInfo.resultHash || null,
               completedAt: taskInfo.completedAt > 0 ? new Date(Number(taskInfo.completedAt) * 1000).toISOString() : null,
               deadline: new Date(Number(taskInfo.deadline) * 1000).toISOString(),

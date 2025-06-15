@@ -1,54 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import App from './App.jsx';
 import './style.css';
 
-// Extend the theme with custom colors and other options
-const theme = extendTheme({
-  colors: {
-    green: {
-      50: '#E6FFF2',
-      100: '#B3FFD9',
-      200: '#80FFBF',
-      300: '#4DFFA6',
-      400: '#22E06B',
-      500: '#1CB859',
-      600: '#158F47',
-      700: '#0F6635',
-      800: '#0A3D23',
-      900: '#051912',
-    },
-  },
-  fonts: {
-    heading: '"Inter", sans-serif',
-    body: '"Inter", sans-serif',
-  },
-  config: {
-    initialColorMode: 'dark',
-    useSystemColorMode: false,
-  },
-  styles: {
-    global: (props) => ({
-      body: {
-        bg: props.colorMode === 'dark' ? 'gray.900' : 'white',
-        color: props.colorMode === 'dark' ? 'white' : 'gray.800',
-      },
-    }),
-  },
-  components: {
-    Button: {
-      defaultProps: {
-        colorScheme: 'green',
-      },
-    },
-  },
-});
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <App />
   </React.StrictMode>
 );
