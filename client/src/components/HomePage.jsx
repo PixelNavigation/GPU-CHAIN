@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { FaServer, FaClock, FaDollarSign } from "react-icons/fa";
 import './HomePage.css';
+import './FanVisualization.css';
 
 const HomeSection = () => {
   return (
@@ -89,6 +90,66 @@ function Features() {
         </div>
       </div>
     </section>
+  );
+}
+
+function FanVisualization() {
+  const fanRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (fanRef.current) {
+        const scrollPosition = window.scrollY;
+        const rotation = scrollPosition * 0.2; // Slower rotation speed
+        
+        // Define ring sizes (in rem)
+        const ringSizes = [50, 45, 40, 35, 30]; // From largest to smallest
+        
+        // Calculate which ring size we should match based on scroll position
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercentage = scrollPosition / scrollHeight;
+        
+        // Calculate the current size index based on scroll position
+        const sizeIndex = Math.min(
+          Math.floor(scrollPercentage * ringSizes.length),
+          ringSizes.length - 1
+        );
+        
+        // Calculate scale factor
+        // Base scale is 0.2 (to fit inside rings)
+        const currentRingSize = ringSizes[sizeIndex];
+        const scale = (currentRingSize * 0.2) / 50; // Normalize to largest ring size
+        
+        // Apply transform with smooth interpolation
+        fanRef.current.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
+      }
+    };
+
+    // Initial size adjustment
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (    <div className="fan-visualization">
+      <div className="ring ring-1"></div>
+      <div className="ring ring-2"></div>
+      <div className="ring ring-3"></div>
+      <div className="ring ring-4"></div>
+      <div className="ring ring-5"></div>
+      <img
+        ref={fanRef}
+        className="fan-image"
+        src="https://dlcdnwebimgs.asus.com/gain/703118E8-AABC-4ED7-9915-FD808DBAE266/w717/h525"
+        alt="GPU Fan"
+        style={{ 
+          maxWidth: '500px', 
+          height: 'auto',
+          transition: 'transform 0.3s ease-out'
+        }}
+      />
+    </div>
   );
 }
 
@@ -216,6 +277,7 @@ function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU }) {
           Our platform connects renters with providers, offering a flexible and cost-effective solution for accessing powerful GPUs.
         </div>
         <Features />
+        <FanVisualization />
         <JoinUs />
         <FAQ />
         <GetStarted />
