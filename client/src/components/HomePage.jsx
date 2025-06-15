@@ -95,54 +95,43 @@ function Features() {
 
 function FanVisualization() {
   const fanRef = useRef(null);
+  const containerRef = useRef(null);
 
-  useEffect(() => {    const handleScroll = () => {
-      if (fanRef.current) {
-        const scrollPosition = window.scrollY;
-        const rotation = scrollPosition * 0.2; // Keep rotation speed constant
-        
-        // Get the fan's position relative to viewport
-        const rect = fanRef.current.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        
-        // Calculate scaling based on element's position in viewport
-        const elementCenter = rect.top + rect.height / 2;
-        const viewportCenter = viewportHeight / 2;
-        const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
-        const maxDistance = viewportHeight / 2;
-        
-        // Calculate scale factor (1 at viewport center, 0 at edges)
-        const scrollProgress = 1 - Math.min(distanceFromCenter / maxDistance, 1);        // Apply size interpolation with new size range (700px to 800px)
-        const minSize = 700;
-        const maxSize = 800;
-        const currentSize = minSize + (maxSize - minSize) * scrollProgress;
-        
-        // Calculate scale based on current size relative to base size (350px)
-        const scale = currentSize / 350;
-        
-        // Apply transform with smooth interpolation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (fanRef.current && containerRef.current) {
+        const section = containerRef.current;
+        const rect = section.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const sectionHeight = rect.height;
+        // Calculate how much of the section is visible in the viewport
+        let visible = 0;
+        if (rect.top < windowHeight && rect.bottom > 0) {
+          const visibleTop = Math.max(rect.top, 0);
+          const visibleBottom = Math.min(rect.bottom, windowHeight);
+          visible = visibleBottom - visibleTop;
+        }
+        // Calculate scroll percentage within the section
+        let scrollPercentage = 0;
+        if (sectionHeight > 0) {
+          scrollPercentage = 1 - Math.max(0, Math.min(visible / sectionHeight, 1));
+        }
+        // The more you scroll down the section, the higher the scrollPercentage (0 at top, 1 at bottom)
+        const minScale = 0.5;
+        const maxScale = 2.2;
+        const scale = minScale + (maxScale - minScale) * scrollPercentage;
+        // Rotation can still be based on window scroll
+        const rotation = window.scrollY * 0.2;
         fanRef.current.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
       }
     };
-
-    // Initial size adjustment
-    handleScroll();    // Use requestAnimationFrame for smoother scrolling
-    let ticking = false;
-    const scrollListener = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', scrollListener);
-    return () => window.removeEventListener('scroll', scrollListener);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (    <div className="fan-visualization">
+  return (
+    <div className="fan-visualization" ref={containerRef}>
       <div className="ring ring-1"></div>
       <div className="ring ring-2"></div>
       <div className="ring ring-3"></div>
@@ -153,10 +142,16 @@ function FanVisualization() {
         className="fan-image"
         src="https://dlcdnwebimgs.asus.com/gain/703118E8-AABC-4ED7-9915-FD808DBAE266/w717/h525"
         alt="GPU Fan"
+        style={{ 
+          maxWidth: '500px', 
+          height: 'auto',
+          transition: 'transform 0.3s cubic-bezier(.4,2,.6,1)',
+        }}
       />
     </div>
   );
 }
+
 
 function JoinUs() {
   return (
