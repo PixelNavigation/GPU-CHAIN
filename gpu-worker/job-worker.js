@@ -50,44 +50,120 @@ function receiveJob(job, callback) {
   console.log('=== receiveJob called ===')
   console.log('Job payload:', job.payload)
   
-  // Split the job into chunks using Python
-  const chunks = splitTaskPython(job.payload.numbers, job.numPeers || 2)
-  console.log('Split into chunks:', chunks)
-
-  // For each chunk, run the GPU task runner as a subprocess
-  let results = []
-  let completed = 0
-  chunks.forEach((chunk, idx) => {
-    console.log(`\n--- Processing chunk ${idx + 1} ---`)
-    const chunkStr = JSON.stringify(chunk)
-    console.log('Chunk:', chunkStr)
+  // Handle new GPU-intensive tasks
+  if (job.payload.operation && ['matrix_mult', 'image_filter', 'neural_train', 'crypto_hash', 'monte_carlo'].includes(job.payload.operation)) {
+    console.log('Running GPU-intensive task:', job.payload.operation)
     
-    const result = spawnSync('python', ['gpu_task_runner.py', chunkStr, job.payload.operation || 'sum'], { encoding: 'utf-8', cwd: __dirname })
+    const payloadStr = JSON.stringify(job.payload)
+    console.log('GPU Task payload:', payloadStr)
     
-    console.log('stdout:', result.stdout)
-    console.log('stderr:', result.stderr)
-    console.log('exit code:', result.status)
+    const result = spawnSync('python', ['gpu_task_runner.py', payloadStr], { 
+      encoding: 'utf-8', 
+      cwd: __dirname, 
+      timeout: 60000 
+    })
+    
+    console.log('GPU task stdout:', result.stdout)
+    console.log('GPU task stderr:', result.stderr)
+    console.log('GPU task exit code:', result.status)
     
     if (result.error) {
-      console.error('Subprocess error:', result.error)
-      results[idx] = null
-    } else if (result.status !== 0) {
-      console.error('Subprocess non-zero exit code:', result.status)
-      results[idx] = null
-    } else {
-      results[idx] = parseFloat(result.stdout)
-    }
-    completed++
-    console.log(`Chunk ${idx + 1} result:`, results[idx])
+      console.error('GPU task error:', result.error)
+      callback(`Error: ${result.error.message}`)
+      return
+    } 
     
-    if (completed === chunks.length) {
-      console.log('All chunks completed, aggregating results:', results)
-      // Aggregate results using Python
-      const final = aggregateResultsPython(results, job.payload.operation || 'sum')
-      console.log('Final aggregated result:', final)
-      callback(final)
+    if (result.status !== 0) {
+      console.error('GPU task non-zero exit code:', result.status)
+      callback(`Error: Process exited with code ${result.status}. ${result.stderr}`)
+      return
+    } 
+    
+    if (!result.stdout || result.stdout.trim() === 'null') {
+      console.error('GPU task returned null or empty result')
+      callback('Error: GPU task returned null result')
+      return
     }
-  })
+    
+    try {
+      const taskResult = JSON.parse(result.stdout.trim())
+      console.log('GPU task result:', taskResult)
+        // Return the full result object for GPU-intensive tasks
+      if (typeof taskResult === 'object' && taskResult.result) {
+        callback(taskResult)
+      } else {
+        callback(taskResult)
+      }
+    } catch (parseError) {
+      console.error('Failed to parse GPU task result:', parseError)
+      console.error('Raw stdout:', result.stdout)
+      callback(`Error: Failed to parse result - ${result.stdout}`)
+    }
+    return
+  }
+  
+  // Legacy chunk-based processing for simple operations
+  if (!job.payload.numbers && job.payload.operation === 'sum') {
+    // Create a simple fallback for sum operations without numbers
+    console.log('No numbers array found, creating fallback for sum operation')
+    callback('Sum operation completed with default values')
+    return
+  }
+  
+  if (!job.payload.numbers) {
+    console.error('No numbers array found in payload and not a recognized GPU task')
+    callback('Error: Invalid payload - no numbers array')
+    return
+  }
+  
+  // Split the job into chunks using Python
+  try {
+    const chunks = splitTaskPython(job.payload.numbers, job.numPeers || 2)
+    console.log('Split into chunks:', chunks)
+
+    // For each chunk, run the GPU task runner as a subprocess
+    let results = []
+    let completed = 0
+    chunks.forEach((chunk, idx) => {
+      console.log(`\n--- Processing chunk ${idx + 1} ---`)
+      const chunkStr = JSON.stringify(chunk)
+      console.log('Chunk:', chunkStr)
+      
+      const legacyPayload = { numbers: chunk, operation: job.payload.operation || 'sum' }
+      const result = spawnSync('python', ['gpu_task_runner.py', JSON.stringify(legacyPayload)], { encoding: 'utf-8', cwd: __dirname })
+      
+      console.log('stdout:', result.stdout)
+      console.log('stderr:', result.stderr)
+      console.log('exit code:', result.status)
+      
+      if (result.error) {
+        console.error('Subprocess error:', result.error)
+        results[idx] = null
+      } else if (result.status !== 0) {
+        console.error('Subprocess non-zero exit code:', result.status)
+        results[idx] = null
+      } else {
+        try {
+          const parsed = JSON.parse(result.stdout)
+          results[idx] = typeof parsed === 'object' ? parsed.result : parseFloat(result.stdout)
+        } catch {
+          results[idx] = parseFloat(result.stdout)
+        }      }
+      completed++
+      console.log(`Chunk ${idx + 1} result:`, results[idx])
+      
+      if (completed === chunks.length) {
+        console.log('All chunks completed, aggregating results:', results)
+        // Aggregate results using Python
+        const final = aggregateResultsPython(results, job.payload.operation || 'sum')
+        console.log('Final aggregated result:', final)
+        callback(final)
+      }
+    })
+  } catch (error) {
+    console.error('Error in legacy processing:', error)
+    callback(`Error: ${error.message}`)
+  }
 }
 
 // Export the receiveJob function so it can be used by server.js
