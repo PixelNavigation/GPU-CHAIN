@@ -4,6 +4,8 @@ import AuthPage from './components/AuthPage';
 import PeerToPeerInterface from './components/PeerToPeerInterface';
 import BlockchainTest from './components/BlockchainTest';
 import GameGPUInterface from './components/GameGPUInterface';
+import GPUWorkerInterface from './components/GPUWorkerInterface';
+import GPURequesterInterface from './components/GPURequesterInterface';
 import "./style.css";
 
 function App() {
@@ -35,9 +37,16 @@ function App() {
   const handleGoToBlockchain = () => {
     setPage("blockchain");
   };
-
   const handleGoToGameGPU = () => {
     setPage("game-gpu");
+  };
+
+  const handleGoToGPUWorker = () => {
+    setPage("gpu-worker");
+  };
+
+  const handleGoToGPURequester = () => {
+    setPage("gpu-requester");
   };
 
   const renderPage = () => {
@@ -58,9 +67,12 @@ function App() {
             onGoToBlockchain={handleGoToBlockchain}
             onGoToGameGPU={handleGoToGameGPU}
           />
-        );
-      case "game-gpu":
+        );      case "game-gpu":
         return <GameGPUInterface />;
+      case "gpu-worker":
+        return <GPUWorkerInterface userEmail={userEmail} peerId="test-peer-id" />;
+      case "gpu-requester":
+        return <GPURequesterInterface userEmail={userEmail} />;
       case "blockchain":
         return <BlockchainTest />;
       default:        return (
@@ -68,6 +80,8 @@ function App() {
             onAuth={handleAuth}
             onGoToBlockchain={handleGoToBlockchain}
             onGoToGameGPU={handleGoToGameGPU}
+            onGoToGPUWorker={handleGoToGPUWorker}
+            onGoToGPURequester={handleGoToGPURequester}
           />
         );
     }
