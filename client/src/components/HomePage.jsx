@@ -8,7 +8,7 @@ const HomeSection = () => {
         <div className="bg-blur-green"></div>
         <div className="bg-ring-green"></div>
         <h1 className="home-title">
-          World's first P2P GPU Market
+          World's first decentralized P2P GPU Market
         </h1>
         <p className="home-description">
           Hyperspace is the world's first truly peer-to-peer GPU rental service.
