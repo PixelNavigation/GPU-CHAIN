@@ -169,7 +169,6 @@ const GameGPUInterface = () => {
         return prev
       })
 
-      // Initiate connection - the callbacks will handle the rest
       peerManager.connectToPeer(peerInputValue)
       setPeerInputValue('') // Clear input
     }
