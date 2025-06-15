@@ -26,14 +26,16 @@ app.post('/run-job', (req, res) => {
       hasResponded = true
       console.log('Job timed out after 30 seconds')
       res.status(500).json({ error: 'Job timed out' })
-    }
-  }, 30000)
-    try {
+    }  }, 30000)
+  
+  try {
     receiveJob({ payload: job.payload, numPeers: job.numPeers || 2 }, result => {
       if (hasResponded) return // Already timed out
-        clearTimeout(timeout)
+      
+      clearTimeout(timeout)
       hasResponded = true
-        if (result === null || result === undefined) {
+      
+      if (result === null || result === undefined) {
         res.status(500).json({ error: 'GPU job failed - no result returned' })
       } else if (typeof result === 'string' && result.startsWith('Error:')) {
         res.status(500).json({ error: result })

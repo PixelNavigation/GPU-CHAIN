@@ -10,10 +10,9 @@ const HomeSection = () => {
         <div className="bg-ring-green"></div>
         <h1 className="home-title">
           World's first decentralized P2P GPU Market
-        </h1>
-        <p className="home-description">
-          Hyperspace is the world's first truly peer-to-peer GPU rental service.
-          Use one simple client app to pay, provision and rent GPU globally.
+        </h1>        <p className="home-description">
+          Unlock Global GPU Power - Instantly, Affordably, Decentralized.
+          The world's first truly peer-to-peer GPU rental service with blockchain integration.
         </p>
         <div className="home-buttons">
           <button className="home-btn">
@@ -33,10 +32,12 @@ const HomeSection = () => {
 }
 
 function Header({ onAuth }) {
-  return (
-    <header className="headerBar fadeIn">
+  return (    <header className="headerBar fadeIn">
       <div className="headerContent">
-        <h1 className="logoText">GPU Share</h1>
+        <div className="logoSection">
+          <h1 className="logoText">GPU Share</h1>
+          <p className="tagline">Unlock Global GPU Power - Instantly, Affordably, Decentralized</p>
+        </div>
         <div>
           <button className="headerBtn" onClick={() => onAuth("login")}>Log in</button>
           <button className="headerBtn headerBtnPrimary" onClick={() => onAuth("signup")}>Sign up</button>
@@ -51,9 +52,9 @@ function Hero() {
     <section className="heroSection fadeIn">
       <div className="heroContent">
         <div className="heroText">
-          <h1 className="heroTitle">Unlock the Power of Shared GPUs</h1>
-          <p className="heroSubtitle">
-            Access high-performance GPUs at a fraction of the cost. Join our community of renters and providers.
+          <h1 className="heroTitle">Unlock the Power of Shared GPUs</h1>          <p className="heroSubtitle">
+            Unlock Global GPU Power - Instantly, Affordably, Decentralized. 
+            Access high-performance GPUs at a fraction of the cost through our revolutionary peer-to-peer network.
           </p>
           <div className="heroActions">
             <button className="heroBtn heroBtnPrimary ripple">Rent a GPU</button>
@@ -256,9 +257,8 @@ function Footer() {
             <a href="#github" className="socialLink">GitHub</a>
           </div>
         </div>
-      </div>
-      <div className="footerBottom">
-        <p>&copy; 2025 GPU Chain. All rights reserved.</p>
+      </div>      <div className="footerBottom">
+        <p>&copy; 2025 GPU Chain - Unlock Global GPU Power - Instantly, Affordably, Decentralized</p>
       </div>
     </footer>
   );

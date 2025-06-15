@@ -264,7 +264,7 @@ function PeerToPeerInterface({ userEmail, onLogout, onGoToBlockchain, onGoToGame
             <FaCircle color={isConnected ? 'green' : 'gray'} size={12} title={isConnected ? 'Connected' : 'Disconnected'} />
           </div>
           <div className="peerIdBox" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span className="peerIdLabel">Your Peer ID:</span>
+            <span className="peerIdLabel"> Wallet ID:</span>
             <span className="peerIdValue" style={{ userSelect: 'all', background: '#232d23', borderRadius: 4, padding: '2px 8px', fontFamily: 'monospace' }}>{peerId || '...'}</span>
             {peerId && (
               <button
