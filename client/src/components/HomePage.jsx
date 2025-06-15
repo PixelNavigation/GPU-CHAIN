@@ -10,9 +10,10 @@ const HomeSection = () => {
         <div className="bg-ring-green"></div>
         <h1 className="home-title">
           World's first decentralized P2P GPU Market
-        </h1>        <p className="home-description">
-          Unlock Global GPU Power - Instantly, Affordably, Decentralized.
-          The world's first truly peer-to-peer GPU rental service with blockchain integration.
+        </h1>
+        <p className="home-description">
+          Hyperspace is the world's first truly peer-to-peer GPU rental service.
+          Use one simple client app to pay, provision and rent GPU globally.
         </p>
         <div className="home-buttons">
           <button className="home-btn">
@@ -32,12 +33,10 @@ const HomeSection = () => {
 }
 
 function Header({ onAuth }) {
-  return (    <header className="headerBar fadeIn">
+  return (
+    <header className="headerBar fadeIn">
       <div className="headerContent">
-        <div className="logoSection">
-          <h1 className="logoText">GPU Share</h1>
-          <p className="tagline">Unlock Global GPU Power - Instantly, Affordably, Decentralized</p>
-        </div>
+        <h1 className="logoText">GPU Share</h1>
         <div>
           <button className="headerBtn" onClick={() => onAuth("login")}>Log in</button>
           <button className="headerBtn headerBtnPrimary" onClick={() => onAuth("signup")}>Sign up</button>
@@ -52,9 +51,9 @@ function Hero() {
     <section className="heroSection fadeIn">
       <div className="heroContent">
         <div className="heroText">
-          <h1 className="heroTitle">Unlock the Power of Shared GPUs</h1>          <p className="heroSubtitle">
-            Unlock Global GPU Power - Instantly, Affordably, Decentralized. 
-            Access high-performance GPUs at a fraction of the cost through our revolutionary peer-to-peer network.
+          <h1 className="heroTitle">Unlock the Power of Shared GPUs</h1>
+          <p className="heroSubtitle">
+            Access high-performance GPUs at a fraction of the cost. Join our community of renters and providers.
           </p>
           <div className="heroActions">
             <button className="heroBtn heroBtnPrimary ripple">Rent a GPU</button>
@@ -96,43 +95,44 @@ function Features() {
 
 function FanVisualization() {
   const fanRef = useRef(null);
-  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (fanRef.current && containerRef.current) {
-        const section = containerRef.current;
-        const rect = section.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        const sectionHeight = rect.height;
-        // Calculate how much of the section is visible in the viewport
-        let visible = 0;
-        if (rect.top < windowHeight && rect.bottom > 0) {
-          const visibleTop = Math.max(rect.top, 0);
-          const visibleBottom = Math.min(rect.bottom, windowHeight);
-          visible = visibleBottom - visibleTop;
-        }
-        // Calculate scroll percentage within the section
-        let scrollPercentage = 0;
-        if (sectionHeight > 0) {
-          scrollPercentage = 1 - Math.max(0, Math.min(visible / sectionHeight, 1));
-        }
-        // The more you scroll down the section, the higher the scrollPercentage (0 at top, 1 at bottom)
-        const minScale = 0.5;
-        const maxScale = 2.2;
-        const scale = minScale + (maxScale - minScale) * scrollPercentage;
-        // Rotation can still be based on window scroll
-        const rotation = window.scrollY * 0.2;
+      if (fanRef.current) {
+        const scrollPosition = window.scrollY;
+        const rotation = scrollPosition * 0.2; // Slower rotation speed
+        
+        // Define ring sizes (in rem)
+        const ringSizes = [50, 45, 40, 35, 30]; // From largest to smallest
+        
+        // Calculate which ring size we should match based on scroll position
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercentage = scrollPosition / scrollHeight;
+        
+        // Calculate the current size index based on scroll position
+        const sizeIndex = Math.min(
+          Math.floor(scrollPercentage * ringSizes.length),
+          ringSizes.length - 1
+        );
+        
+        // Calculate scale factor
+        // Base scale is 0.2 (to fit inside rings)
+        const currentRingSize = ringSizes[sizeIndex];
+        const scale = (currentRingSize * 0.2) / 50; // Normalize to largest ring size
+        
+        // Apply transform with smooth interpolation
         fanRef.current.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
       }
     };
+
+    // Initial size adjustment
     handleScroll();
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
-    <div className="fan-visualization" ref={containerRef}>
+  return (    <div className="fan-visualization">
       <div className="ring ring-1"></div>
       <div className="ring ring-2"></div>
       <div className="ring ring-3"></div>
@@ -146,13 +146,12 @@ function FanVisualization() {
         style={{ 
           maxWidth: '500px', 
           height: 'auto',
-          transition: 'transform 0.3s cubic-bezier(.4,2,.6,1)',
+          transition: 'transform 0.3s ease-out'
         }}
       />
     </div>
   );
 }
-
 
 function JoinUs() {
   return (
@@ -257,8 +256,9 @@ function Footer() {
             <a href="#github" className="socialLink">GitHub</a>
           </div>
         </div>
-      </div>      <div className="footerBottom">
-        <p>&copy; 2025 GPU Chain - Unlock Global GPU Power - Instantly, Affordably, Decentralized</p>
+      </div>
+      <div className="footerBottom">
+        <p>&copy; 2025 GPU Chain. All rights reserved.</p>
       </div>
     </footer>
   );
