@@ -19,7 +19,8 @@ export default class PeerManager {
         if (data.job) {
           // Send job to backend GPU worker
           const result = await this.runJobOnBackend(data.job)
-          conn.send({ result, jobId: data.job.timestamp })
+          // Use jobId from the job object
+          conn.send({ result, jobId: data.job.jobId })
         } else if (data.result !== undefined) {
           if (this.onJobResult) this.onJobResult(data)
         }

@@ -1,19 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import './AuthPage.css';
 
 // Unified Auth Page with Login & Signup Tabs
 function AuthPage({ onBack, defaultTab = "login", onLoginSuccess }) {
-  const [tab, setTab] = useState(defaultTab);
-  const[name, setName] = useState("");
+  const [tab, setTab] = useState(defaultTab === "login" ? 0 : 1);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [message, setMessage] = useState("");
+  const [notifType, setNotifType] = useState("info");
+  const cardRef = useRef(null);
+
+  // Card tilt effect
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * 8;
+    const rotateY = ((x - centerX) / centerX) * -8;
+    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+  };
+  const handleMouseLeave = () => {
+    const card = cardRef.current;
+    if (card) card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+  };
 
   // Handles login POST
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
+    setNotifType("info");
     try {
       const res = await fetch("http://localhost:5000/login", {
         method: "POST",
@@ -23,15 +43,17 @@ function AuthPage({ onBack, defaultTab = "login", onLoginSuccess }) {
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message || "Login successful!");
-        // Call the success callback to redirect to P2P interface
+        setNotifType("success");
         setTimeout(() => {
           onLoginSuccess(email);
         }, 1000);
       } else {
         setMessage(data.message || "Login failed.");
+        setNotifType("error");
       }
     } catch (err) {
       setMessage("Network error: " + err.message);
+      setNotifType("error");
     }
   };
 
@@ -39,6 +61,7 @@ function AuthPage({ onBack, defaultTab = "login", onLoginSuccess }) {
   const handleSignup = async (e) => {
     e.preventDefault();
     setMessage("");
+    setNotifType("info");
     try {
       const res = await fetch("http://localhost:5000/signup", {
         method: "POST",
@@ -48,72 +71,90 @@ function AuthPage({ onBack, defaultTab = "login", onLoginSuccess }) {
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message || "Signup successful!");
-        // Auto-switch to login tab after successful signup
+        setNotifType("success");
         setTimeout(() => {
-          setTab("login");
+          setTab(0);
           setMessage("Account created! Please log in.");
+          setNotifType("info");
         }, 1500);
       } else {
         setMessage(data.message || "Signup failed.");
+        setNotifType("error");
       }
     } catch (err) {
       setMessage("Network error: " + err.message);
+      setNotifType("error");
     }
   };
+
+  useEffect(() => {
+    const glow = document.createElement('div');
+    glow.className = 'glow-cursor';
+    document.body.appendChild(glow);
+    const move = e => {
+      glow.style.left = `${e.clientX - 30}px`;
+      glow.style.top = `${e.clientY - 30}px`;
+    };
+    window.addEventListener('mousemove', move);
+    return () => {
+      window.removeEventListener('mousemove', move);
+      document.body.removeChild(glow);
+    };
+  }, []);
+
   return (
-    <div className="authContainer">
-      <div className="authCard">
+    <div className="authContainer fadeIn">
+      <div
+        className="authCard animatedCard"
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         <div className="tabContainer">
           <button
-            className={`tab ${tab === "login" ? "tabActive" : ""}`}
-            onClick={() => setTab("login")}
+            className={`tab ${tab === 0 ? "tabActive" : ""}`}
+            onClick={() => setTab(0)}
+            type="button"
           >
-            Log In
+            Login
           </button>
           <button
-            className={`tab ${tab === "signup" ? "tabActive" : ""}`}
-            onClick={() => setTab("signup")}
+            className={`tab ${tab === 1 ? "tabActive" : ""}`}
+            onClick={() => setTab(1)}
+            type="button"
           >
             Sign Up
           </button>
         </div>
-        
-        {tab === "login" ? (
-          <>
-            <div className="authTitle">Log in to your account</div>
-            <form className="authForm" onSubmit={handleLogin}>
+        <div className="tabPanels">
+          {tab === 0 && (
+            <form className="authForm slideInLeft" onSubmit={handleLogin}>
               <input
                 className="input"
-                type="email"
                 placeholder="Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                type="email"
                 required
+                autoFocus
               />
               <input
                 className="input"
-                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                type="password"
                 required
               />
-              <button className="btn authBtn" type="submit">Log in</button>
+              <button type="submit" className="authBtn ripple">
+                Login
+              </button>
             </form>
-            <div className="authSwitch">
-              Don't have an account?{" "}
-              <span className="switchTab" onClick={() => setTab("signup")}>
-                Sign up
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="authTitle">Create a new account</div>
-            <form className="authForm" onSubmit={handleSignup}>
+          )}
+          {tab === 1 && (
+            <form className="authForm slideInRight" onSubmit={handleSignup}>
               <input
                 className="input"
-                type="text"
                 placeholder="Name"
                 value={name}
                 onChange={e => setName(e.target.value)}
@@ -121,39 +162,34 @@ function AuthPage({ onBack, defaultTab = "login", onLoginSuccess }) {
               />
               <input
                 className="input"
-                type="email"
                 placeholder="Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                type="email"
                 required
               />
               <input
                 className="input"
-                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                type="password"
                 required
               />
-              <button className="btn authBtn" type="submit">Sign up</button>
+              <button type="submit" className="authBtn ripple">
+                Sign Up
+              </button>
             </form>
-            <div className="authSwitch">
-              Already have an account?{" "}
-              <span className="switchTab" onClick={() => setTab("login")}>
-                Log in
-              </span>
-            </div>
-          </>
-        )}
-        
+          )}
+        </div>
         {message && (
-          <div className={`message ${message.includes("success") ? "messageSuccess" : "messageError"}`}>
+          <div className={`message ${notifType === 'success' ? 'messageSuccess bounceIn' : notifType === 'error' ? 'messageError shake' : ''}`}
+            style={{ marginTop: 18 }}>
             {message}
           </div>
         )}
-        
         <button className="backBtn" onClick={onBack}>
-          Back to Home
+          ← Back
         </button>
       </div>
     </div>

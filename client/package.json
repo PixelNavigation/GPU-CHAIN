@@ -1,5 +1,5 @@
 {
-  "name": "gpu-chain-vite",
+  "name": "gpu-chain-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,14 +8,16 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "devDependencies": {
-    "vite": "^6.3.5"
-  },
   "dependencies": {
     "@vitejs/plugin-react": "^4.5.2",
     "ethers": "^6.14.4",
     "peerjs": "^1.5.5",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.4.0"
   }
 }

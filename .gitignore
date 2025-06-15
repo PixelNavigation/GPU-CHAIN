@@ -32,3 +32,4 @@ artifacts/
 # Log files
 *.log
 debug.log
+node_modules
