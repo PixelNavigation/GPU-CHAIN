@@ -96,44 +96,43 @@ function Features() {
 
 function FanVisualization() {
   const fanRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (fanRef.current) {
-        const scrollPosition = window.scrollY;
-        const rotation = scrollPosition * 0.2; // Slower rotation speed
-        
-        // Define ring sizes (in rem)
-        const ringSizes = [50, 45, 40, 35, 30]; // From largest to smallest
-        
-        // Calculate which ring size we should match based on scroll position
-        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercentage = scrollPosition / scrollHeight;
-        
-        // Calculate the current size index based on scroll position
-        const sizeIndex = Math.min(
-          Math.floor(scrollPercentage * ringSizes.length),
-          ringSizes.length - 1
-        );
-        
-        // Calculate scale factor
-        // Base scale is 0.2 (to fit inside rings)
-        const currentRingSize = ringSizes[sizeIndex];
-        const scale = (currentRingSize * 0.2) / 50; // Normalize to largest ring size
-        
-        // Apply transform with smooth interpolation
+      if (fanRef.current && containerRef.current) {
+        const section = containerRef.current;
+        const rect = section.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const sectionHeight = rect.height;
+        // Calculate how much of the section is visible in the viewport
+        let visible = 0;
+        if (rect.top < windowHeight && rect.bottom > 0) {
+          const visibleTop = Math.max(rect.top, 0);
+          const visibleBottom = Math.min(rect.bottom, windowHeight);
+          visible = visibleBottom - visibleTop;
+        }
+        // Calculate scroll percentage within the section
+        let scrollPercentage = 0;
+        if (sectionHeight > 0) {
+          scrollPercentage = 1 - Math.max(0, Math.min(visible / sectionHeight, 1));
+        }
+        // The more you scroll down the section, the higher the scrollPercentage (0 at top, 1 at bottom)
+        const minScale = 0.5;
+        const maxScale = 2.2;
+        const scale = minScale + (maxScale - minScale) * scrollPercentage;
+        // Rotation can still be based on window scroll
+        const rotation = window.scrollY * 0.2;
         fanRef.current.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
       }
     };
-
-    // Initial size adjustment
     handleScroll();
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (    <div className="fan-visualization">
+  return (
+    <div className="fan-visualization" ref={containerRef}>
       <div className="ring ring-1"></div>
       <div className="ring ring-2"></div>
       <div className="ring ring-3"></div>
@@ -147,12 +146,13 @@ function FanVisualization() {
         style={{ 
           maxWidth: '500px', 
           height: 'auto',
-          transition: 'transform 0.3s ease-out'
+          transition: 'transform 0.3s cubic-bezier(.4,2,.6,1)',
         }}
       />
     </div>
   );
 }
+
 
 function JoinUs() {
   return (
