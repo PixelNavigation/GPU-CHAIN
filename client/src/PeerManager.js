@@ -9,10 +9,14 @@ export default class PeerManager {
     this.conn = null
     this.peerId = ''
     this.onJobResult = onJobResult
+    this.onPeerId = null
+    
     this.peer.on('open', id => {
       this.peerId = id
+      console.log('Peer opened with ID:', id)
       if (this.onPeerId) this.onPeerId(id)
     })
+    
     this.peer.on('connection', conn => {
       this.conn = conn
       conn.on('data', async data => {
@@ -42,9 +46,12 @@ export default class PeerManager {
       this.conn.send({ job })
     }
   }
-
-  onPeerId(cb) {
-    this.onPeerId = cb
+  setPeerIdCallback(callback) {
+    this.onPeerId = callback
+    // If peer ID is already available, call the callback immediately
+    if (this.peerId) {
+      callback(this.peerId)
+    }
   }
 
   // Call the Node.js backend to run the job
