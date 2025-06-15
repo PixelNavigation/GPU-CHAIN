@@ -27,12 +27,13 @@ const GameGPUInterface = () => {
   const [currentFrame, setCurrentFrame] = useState(null)
   const canvasRef = useRef(null)
   const gameLoopRef = useRef(null)
-
   useEffect(() => {
     const gpm = new GameGPUManager()
-    const pm = new PeerManager((data) => {
-      handleGameRenderResult(data)
-    })
+    const pm = new PeerManager(
+      (data) => handleGameRenderResult(data),
+      (peerId, status) => handlePeerConnected(peerId, status),
+      (peerId) => handlePeerDisconnected(peerId)
+    )
     
     // Set up peer ID callback
     pm.setPeerIdCallback((id) => {
@@ -70,12 +71,68 @@ const GameGPUInterface = () => {
         color: { r: 0.3, g: 0.3, b: 1.0 },
         type: 'triangle'
       }
-    ]
-    
+    ]    
     setGameScene(prev => ({
       ...prev,
       objects: sampleObjects
     }))
+  }
+
+  const handlePeerConnected = (peerId, status) => {
+    console.log('Peer connected:', peerId, status)
+    
+    // Check if peer already exists in the list
+    setConnectedPeers(prev => {
+      const existingPeer = prev.find(p => p.id === peerId)
+      if (existingPeer) {
+        // Update existing peer status
+        return prev.map(p => 
+          p.id === peerId ? { ...p, status: 'connected' } : p
+        )
+      } else {
+        // Add new peer
+        return [...prev, {
+          id: peerId,
+          status: 'connected',
+          gpuLoad: 0,
+          latency: 0,
+          framesRendered: 0
+        }]
+      }
+    })
+    
+    // Update network connection status
+    setIsConnectedToNetwork(true)
+    
+    // Add peer to game GPU manager if it exists
+    if (gameGPUManager && peerManager) {
+      const conn = peerManager.connections.get(peerId)
+      if (conn) {
+        gameGPUManager.addPeer(peerId, conn, {
+          gpuScore: 0.8,
+          vram: '8GB',
+          architecture: 'CUDA'
+        })
+      }
+    }
+  }
+
+  const handlePeerDisconnected = (peerId) => {
+    console.log('Peer disconnected:', peerId)
+    
+    // Remove peer from connected list and update network status
+    setConnectedPeers(prev => {
+      const filtered = prev.filter(peer => peer.id !== peerId)
+      if (filtered.length === 0) {
+        setIsConnectedToNetwork(false)
+      }
+      return filtered
+    })
+    
+    // Remove from game GPU manager
+    if (gameGPUManager) {
+      gameGPUManager.removePeer(peerId)
+    }
   }
   const connectGamePeer = () => {
     if (!peerInputValue.trim()) {
@@ -88,47 +145,33 @@ const GameGPUInterface = () => {
       return
     }
 
-    if (peerManager && gameGPUManager) {
-      peerManager.connectToPeer(peerInputValue)
+    if (peerManager) {
+      // Check if already connected
+      if (peerManager.isConnectedToPeer(peerInputValue)) {
+        alert('Already connected to this peer')
+        return
+      }
+
+      console.log('Attempting to connect to peer:', peerInputValue)
       
-      if (peerManager.conn) {
-        peerManager.conn.on('open', () => {
-          // Add peer to game GPU manager
-          gameGPUManager.addPeer(peerInputValue, peerManager.conn, {
-            gpuScore: 0.8, // Estimated GPU capability
-            vram: '8GB',
-            architecture: 'CUDA'
-          })
-          
-          setConnectedPeers(prev => [...prev, {
+      // Add peer to UI as "connecting" status
+      setConnectedPeers(prev => {
+        const existingPeer = prev.find(p => p.id === peerInputValue)
+        if (!existingPeer) {
+          return [...prev, {
             id: peerInputValue,
-            status: 'connected',
+            status: 'connecting',
             gpuLoad: 0,
             latency: 0,
             framesRendered: 0
-          }])
-          
-          // Update network connection status
-          setIsConnectedToNetwork(true)
-          setPeerInputValue('') // Clear input after successful connection
-        })
-        
-        peerManager.conn.on('close', () => {
-          // Remove peer and update status
-          setConnectedPeers(prev => prev.filter(peer => peer.id !== peerInputValue))
-          if (connectedPeers.length <= 1) {
-            setIsConnectedToNetwork(false)
-          }
-        })
-        
-        peerManager.conn.on('error', (error) => {
-          console.error('Peer connection error:', error)
-          // Update peer status to error
-          setConnectedPeers(prev => prev.map(peer => 
-            peer.id === peerInputValue ? { ...peer, status: 'error' } : peer
-          ))
-        })
-      }
+          }]
+        }
+        return prev
+      })
+
+      // Initiate connection - the callbacks will handle the rest
+      peerManager.connectToPeer(peerInputValue)
+      setPeerInputValue('') // Clear input
     }
   }
 
@@ -237,7 +280,6 @@ const GameGPUInterface = () => {
       // Frame data will be processed by GameGPUManager
     }
   }
-
   const testSingleFrameRender = async () => {
     if (connectedPeers.length === 0) {
       alert('No peers connected for testing')
@@ -254,15 +296,17 @@ const GameGPUInterface = () => {
 
     // Send test render to first connected peer
     const peer = connectedPeers[0]
-    if (peerManager && peerManager.conn) {
-      peerManager.conn.send({
-        job: {
-          type: 'game_render',
-          taskId: `test_${Date.now()}`,
-          renderData: testPayload,
-          jobId: `test_render_${Date.now()}`
-        }
-      })
+    if (peerManager && peerManager.isConnectedToPeer(peer.id)) {
+      peerManager.sendJob({
+        type: 'game_render',
+        taskId: `test_${Date.now()}`,
+        renderData: testPayload,
+        jobId: `test_render_${Date.now()}`
+      }, peer.id)
+      
+      console.log('Test render job sent to peer:', peer.id)
+    } else {
+      alert('Peer connection not available')
     }
   }
 
@@ -387,8 +431,7 @@ const GameGPUInterface = () => {
                       {peer.status === 'connected' ? '🟢' : peer.status === 'error' ? '🔴' : '🟡'}
                     </div>
                   </div>
-                  <span className="peer-status">{peer.status.toUpperCase()}</span>
-                  <span className="peer-load">Load: {peer.gpuLoad}%</span>
+                  <span className="peer-status">{peer.status.toUpperCase()}</span>                  <span className="peer-load">Load: {peer.gpuLoad}%</span>
                   <span className="peer-latency">{peer.latency}ms</span>
                 </div>
               ))
@@ -529,15 +572,15 @@ const GameGPUInterface = () => {
                 ({Math.round(obj.position.x)}, {Math.round(obj.position.y)})
               </span>
               <div 
-                className="object-color" 
-                style={{
+                className="object-color"                style={{
                   backgroundColor: `rgb(${obj.color.r * 255}, ${obj.color.g * 255}, ${obj.color.b * 255})`
                 }}
               ></div>
             </div>
-          ))}        </div>
-      </div>
+          ))}
         </div>
+      </div>
+      </div>
     </div>
   )
 }
