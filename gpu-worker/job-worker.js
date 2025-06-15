@@ -49,7 +49,55 @@ function aggregateResultsPython(results, operation) {
 function receiveJob(job, callback) {
   console.log('=== receiveJob called ===')
   console.log('Job payload:', job.payload)
-  
+    // Handle game rendering tasks
+  if (job.payload.operation && ['render_frame', 'compute_lighting', 'apply_shaders', 'post_process'].includes(job.payload.operation)) {
+    console.log('Running game rendering task:', job.payload.operation)
+    
+    const payloadStr = JSON.stringify(job.payload)
+    console.log('Game Render payload:', payloadStr)
+    
+    const result = spawnSync('python', ['game_renderer_simple.py', payloadStr], { 
+      encoding: 'utf-8', 
+      cwd: __dirname, 
+      timeout: 10000 // 10 second timeout for rendering
+    })
+    
+    console.log('Game render stdout:', result.stdout)
+    console.log('Game render stderr:', result.stderr)
+    console.log('Game render exit code:', result.status)
+    
+    if (result.error) {
+      console.error('Game render error:', result.error)
+      callback(`Error: ${result.error.message}`)
+      return
+    } 
+    
+    if (result.status !== 0) {
+      console.error('Game render non-zero exit code:', result.status)
+      callback(`Error: Process exited with code ${result.status}. ${result.stderr}`)
+      return
+    } 
+    
+    if (!result.stdout || result.stdout.trim() === 'null') {
+      console.error('Game render returned null or empty result')
+      callback('Error: Game render returned null result')
+      return
+    }
+    
+    try {
+      const renderResult = JSON.parse(result.stdout.trim())
+      console.log('Game render result:', renderResult)
+      
+      // Return the full render result object
+      callback(renderResult)
+    } catch (parseError) {
+      console.error('Failed to parse game render result:', parseError)
+      console.error('Raw stdout:', result.stdout)
+      callback(`Error: Failed to parse result - ${result.stdout}`)
+    }
+    return
+  }
+
   // Handle new GPU-intensive tasks
   if (job.payload.operation && ['matrix_mult', 'image_filter', 'neural_train', 'crypto_hash', 'monte_carlo'].includes(job.payload.operation)) {
     console.log('Running GPU-intensive task:', job.payload.operation)

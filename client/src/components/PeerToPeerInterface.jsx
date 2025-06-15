@@ -13,7 +13,7 @@ const GPU_TASKS = {
 };
 
 // Peer-to-Peer Interface Component
-function PeerToPeerInterface({ userEmail, onLogout }) {
+function PeerToPeerInterface({ userEmail, onLogout, onGoToBlockchain, onGoToGameGPU }) {
   const [peerId, setPeerId] = useState('')
   const [connId, setConnId] = useState('')
   const [messages, setMessages] = useState([])
@@ -409,13 +409,22 @@ function PeerToPeerInterface({ userEmail, onLogout }) {
               )}
             </div>
           )}
-        </div>
-        {notif && (
+        </div>        {notif && (
           <div className={`message ${notifType === 'success' ? 'messageSuccess bounceIn' : notifType === 'error' ? 'messageError shake' : ''}`}
             style={{ marginTop: 18 }}>
             {notif}
           </div>
         )}
+        
+        {/* Navigation Section */}
+        <div className="navigation-section">
+          <button className="nav-btn game-nav-btn" onClick={onGoToGameGPU}>
+            🎮 Distributed Gaming
+          </button>
+          <button className="nav-btn blockchain-nav-btn" onClick={onGoToBlockchain}>
+            🔗 Blockchain Test
+          </button>
+        </div>
       </div>
     </div>
   )
