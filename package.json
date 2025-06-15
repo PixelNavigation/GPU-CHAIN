@@ -10,9 +10,18 @@
     "dev": "npm start"
   },
   "devDependencies": {
+    "@tenderly/hardhat-tenderly": "^2.3.0",
     "concurrently": "^8.2.2"
   },
-  "keywords": ["gpu", "peer-to-peer", "blockchain", "computing"],
+  "keywords": [
+    "gpu",
+    "peer-to-peer",
+    "blockchain",
+    "computing"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
 }

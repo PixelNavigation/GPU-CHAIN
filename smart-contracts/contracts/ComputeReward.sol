@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title ComputeReward
@@ -65,7 +65,8 @@ contract ComputeReward is ERC20, Ownable, ReentrancyGuard {
     uint256 public constant VERIFICATION_PERIOD = 10 minutes;
     uint256 public constant MIN_REWARD = 0.001 ether;
     uint256 public constant PLATFORM_FEE_PERCENT = 5; // 5% platform fee
-      constructor() ERC20("GPU Chain Token", "GPUC") Ownable(msg.sender) {
+    
+    constructor() ERC20("GPU Chain Token", "GPUC") {
         _mint(msg.sender, 1000000 * 10**decimals()); // Mint initial supply
     }
     

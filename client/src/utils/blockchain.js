@@ -1,11 +1,14 @@
 import { ethers } from 'ethers';
 import ComputeRewardABI from './ComputeReward-abi.json';
+import contractConfig from './contract-config.json';
 
-// Contract configuration
+// Contract configuration - uses dynamic config from deployment
 export const CONTRACT_CONFIG = {
-  // Deployed contract address (localhost for development)
-  address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-  abi: ComputeRewardABI
+  // Use deployed contract address from config, fallback to localhost
+  address: contractConfig?.contractAddress || "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  abi: ComputeRewardABI,
+  network: contractConfig?.network || "localhost",
+  deployedAt: contractConfig?.deployedAt
 };
 
 // Network configurations
