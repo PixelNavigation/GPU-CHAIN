@@ -33,9 +33,10 @@ app.post('/run-job', (req, res) => {
       if (hasResponded) return // Already timed out
         clearTimeout(timeout)
       hasResponded = true
-      
-      if (result === null || isNaN(result)) {
-        res.status(500).json({ error: 'GPU job failed or CUDA not available.' })
+        if (result === null || result === undefined) {
+        res.status(500).json({ error: 'GPU job failed - no result returned' })
+      } else if (typeof result === 'string' && result.startsWith('Error:')) {
+        res.status(500).json({ error: result })
       } else {
         res.json({ result })
       }

@@ -3,6 +3,7 @@ import HomePage from './components/HomePage';
 import AuthPage from './components/AuthPage';
 import PeerToPeerInterface from './components/PeerToPeerInterface';
 import BlockchainTest from './components/BlockchainTest';
+import GameGPUInterface from './components/GameGPUInterface';
 import "./style.css";
 
 function App() {
@@ -31,9 +32,12 @@ function App() {
   const handleBackToHome = () => {
     setPage("home");
   };
-
   const handleGoToBlockchain = () => {
     setPage("blockchain");
+  };
+
+  const handleGoToGameGPU = () => {
+    setPage("game-gpu");
   };
 
   const renderPage = () => {
@@ -47,21 +51,23 @@ function App() {
             onBackToHome={handleBackToHome}
           />
         );
-      case "p2p":
-        return (
+      case "p2p":        return (
           <PeerToPeerInterface
             userEmail={userEmail}
             onLogout={handleLogout}
             onGoToBlockchain={handleGoToBlockchain}
+            onGoToGameGPU={handleGoToGameGPU}
           />
         );
+      case "game-gpu":
+        return <GameGPUInterface />;
       case "blockchain":
         return <BlockchainTest />;
-      default:
-        return (
+      default:        return (
           <HomePage
             onAuth={handleAuth}
             onGoToBlockchain={handleGoToBlockchain}
+            onGoToGameGPU={handleGoToGameGPU}
           />
         );
     }

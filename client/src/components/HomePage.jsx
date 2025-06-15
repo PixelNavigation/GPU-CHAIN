@@ -203,7 +203,7 @@ function Footer() {
   );
 }
 
-function HomePage({ onAuth, onGoToBlockchain }) {
+function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU }) {
   return (
     <>
       <Header onAuth={onAuth} />
@@ -219,6 +219,32 @@ function HomePage({ onAuth, onGoToBlockchain }) {
         <JoinUs />
         <FAQ />
         <GetStarted />
+        
+        {/* Game GPU Section */}
+        <div className="game-gpu-section">
+          <div className="sectionTitle">🎮 Distributed GPU Gaming</div>
+          <div className="game-gpu-desc">
+            Experience next-level gaming by leveraging multiple peer GPUs for enhanced graphics rendering and performance.
+          </div>
+          <div className="game-gpu-features">
+            <div className="feature-item">
+              <h4>🚀 Real-time Load Balancing</h4>
+              <p>Automatically distribute rendering tasks across connected peer GPUs</p>
+            </div>
+            <div className="feature-item">
+              <h4>⚡ Enhanced Performance</h4>
+              <p>Achieve higher FPS and better graphics quality using distributed processing</p>
+            </div>
+            <div className="feature-item">
+              <h4>🌐 P2P GPU Sharing</h4>
+              <p>Connect with other gamers to share GPU resources seamlessly</p>
+            </div>
+          </div>
+          <button className="btn game-gpu-btn" onClick={onGoToGameGPU}>
+            🎮 Try Distributed Gaming
+          </button>
+        </div>
+        
         {/* Blockchain Test Section */}
         <div className="blockchain-test-section">
           <div className="sectionTitle">🔗 Blockchain Integration</div>
