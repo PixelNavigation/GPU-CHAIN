@@ -264,7 +264,7 @@ function Footer() {
   );
 }
 
-function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU }) {
+function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU, onGoToGPUWorker, onGoToGPURequester }) {
   return (
     <>
       <Header onAuth={onAuth} />
@@ -275,12 +275,48 @@ function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU }) {
         <div className="howItWorksTitle">Seamless GPU Sharing</div>
         <div className="howItWorksDesc">
           Our platform connects renters with providers, offering a flexible and cost-effective solution for accessing powerful GPUs.
-        </div>
-        <Features />
+        </div>        <Features />
         <FanVisualization />
         <JoinUs />
         <FAQ />
-        <GetStarted />
+        
+        {/* GPU Blockchain Marketplace */}
+        <div className="blockchain-section">
+          <div className="sectionTitle">💎 GPU Blockchain Marketplace</div>
+          <div className="blockchain-desc">
+            Beautiful blockchain interface for GPU workers and requesters with wallet integration and hourly rates.
+          </div>
+          
+          <div className="blockchain-options">
+            <div className="blockchain-option">
+              <h4>🖥️ GPU Worker Dashboard</h4>
+              <p>Monetize your GPU computing power</p>
+              <ul>
+                <li>Set custom hourly rates for your GPU</li>
+                <li>Track earnings and performance stats</li>
+                <li>Automatic job matching system</li>
+                <li>Secure blockchain payments</li>
+              </ul>
+              <button className="btn worker-btn" onClick={onGoToGPUWorker}>
+                🚀 Become GPU Worker
+              </button>
+            </div>
+            
+            <div className="blockchain-option">
+              <h4>🚀 GPU Rental Market</h4>
+              <p>Rent powerful GPUs for your compute tasks</p>
+              <ul>
+                <li>Browse available GPU marketplace</li>
+                <li>Flexible hourly rental system</li>
+                <li>Real-time performance monitoring</li>
+                <li>Transparent pricing and ratings</li>
+              </ul>
+              <button className="btn requester-btn" onClick={onGoToGPURequester}>
+                💰 Rent GPU Power
+              </button>
+            </div>
+          </div>
+        </div>
         
         {/* Game GPU Section */}
         <div className="game-gpu-section">
@@ -307,14 +343,14 @@ function HomePage({ onAuth, onGoToBlockchain, onGoToGameGPU }) {
           </button>
         </div>
         
-        {/* Blockchain Test Section */}
+        {/* Legacy Blockchain Test Section */}
         <div className="blockchain-test-section">
-          <div className="sectionTitle">🔗 Blockchain Integration</div>
+          <div className="sectionTitle">🔗 Legacy Blockchain Test</div>
           <div className="blockchain-desc">
-            Test our smart contract integration for decentralized GPU compute rewards.
+            Test our original smart contract integration (for development).
           </div>
           <button className="btn" onClick={onGoToBlockchain}>
-            Test Blockchain Features
+            Test Legacy Blockchain
           </button>
         </div>
       </main>
