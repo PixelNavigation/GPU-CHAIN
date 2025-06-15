@@ -239,7 +239,8 @@ const GameGPUInterface = () => {
   }
 
   return (
-    <div className="game-gpu-interface">      <div className="game-header">
+    <div className="game-gpu-interface">
+      <div className="game-header">
         <h2>🎮 Distributed GPU Gaming</h2>
         <p>Leverage peer GPUs for enhanced gaming performance</p>
         
@@ -291,7 +292,8 @@ const GameGPUInterface = () => {
                     <div className={`connection-indicator ${peer.status}`}>
                       {peer.status === 'connected' ? '🟢' : peer.status === 'error' ? '🔴' : '🟡'}
                     </div>
-                  </div>                  <span className="peer-status">{peer.status.toUpperCase()}</span>
+                  </div>
+                  <span className="peer-status">{peer.status.toUpperCase()}</span>
                   <span className="peer-load">Load: {peer.gpuLoad}%</span>
                   <span className="peer-latency">{peer.latency}ms</span>
                 </div>
@@ -342,7 +344,9 @@ const GameGPUInterface = () => {
             ⏹️ Stop Game
           </button>
         </div>
-      </div>      <div className="game-display">
+      </div>
+      
+      <div className="game-display">
         {/* Network Status Panel */}
         <div className="network-status-panel">
           <h3>🌐 Network Status</h3>
@@ -437,9 +441,9 @@ const GameGPUInterface = () => {
                 }}
               ></div>
             </div>
-          ))}
-        </div>
+          ))}        </div>
       </div>
+        </div>
     </div>
   )
 }
